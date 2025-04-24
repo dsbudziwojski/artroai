@@ -17,4 +17,17 @@ Prompt user to generate AI Art which entails (2) API calls:
 
 ## Running ArtoAI
 
-TODO
+0. Go to the right directory
+```
+cd /where/file/is/.../artroai
+```
+2. Running server
+```
+cd server
+npm start
+```
+2. Running client
+```
+cd client
+npm start
+```
