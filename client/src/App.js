@@ -1,19 +1,15 @@
-import {useEffect, useState} from 'react';
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 function App() {
-  const [serverMsg, setServerMsg] = useState("I got nothing!")
-
-  useEffect(() => {
-    fetch('/test')
-        .then(resp => resp.json())
-        .then(data => setServerMsg(data.serverMsg))
-        .catch(() => setServerMsg("Hmm still waiting!"))
-    }, []);
-
   return (
-    <>
-      {serverMsg}
-    </>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />}/>
+          <Route path="/home" element={<Home />}/>
+        </Routes >
+      </BrowserRouter>
   );
 }
 
