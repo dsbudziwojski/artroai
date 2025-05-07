@@ -1,5 +1,5 @@
 import express from 'express'
-import {createProfile} from "./controller/ProfileController.js";
+import { createProfile, getProfile } from "./controller/ProfileController.js";
 const app = express()
 const port = process.env.PORT || 5001
 
@@ -9,6 +9,8 @@ app.get('/api/test', (req, res) => {
 })
 
 app.post('/api/users', createProfile)
+
+app.get('/api/users/:username', getProfile)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

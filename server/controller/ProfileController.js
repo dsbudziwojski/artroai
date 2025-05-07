@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 export const createProfile = async (req, res) => {
     const { username, first_name, last_name, bio, email} = req.body
-    if (username == "" || first_name == "" ||last_name == "" || email == "" || email == "") {
+    if (username === "" || first_name === "" ||last_name === "" || email === "" || email === "") {
         throw new Error("required input was not valid")
     }
     try {
@@ -23,3 +23,17 @@ export const createProfile = async (req, res) => {
     }
 }
 
+export const getProfile = async (req, res) => {
+    try {
+        const profile = await prisma.user_profile.findUnique({
+            where: {username: req.params.username}
+        })
+        if (profile === null) {
+           throw new Error("No profile exits")
+        }
+        res.status(200).json({profile: profile})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
