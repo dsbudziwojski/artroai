@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 const mockPublicFeed = [
@@ -120,7 +119,6 @@ function Home() {
     return (
         <div>
             <div>
-                <h1>Message: {serverMsg}</h1>
                 <button onClick={() => navigate("/profile")}>User Profile</button>
             </div>
             <div style={{ padding: "1rem" }}>
