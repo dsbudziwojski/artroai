@@ -1,0 +1,27 @@
+import React,
+{ useState, useEffect
+} from 'react';
+
+export default function Home() {
+  const [serverMsg, setServerMsg
+  ] = useState("Loading...");
+
+  useEffect(() => {
+      fetch('/api/test')
+          .then(resp => resp.json())
+          .then((data: { serverMsg: string
+    }) => setServerMsg(data.serverMsg))
+          .catch(() => setServerMsg("Hmm still waiting!"));
+  },
+  []);
+
+  return (
+    <div>
+      <h1>Home</h1>
+      <p>
+        {serverMsg
+  }
+      </p>
+    </div>
+  );
+}
