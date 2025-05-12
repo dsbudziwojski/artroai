@@ -18,13 +18,13 @@ model follower {
 }
 
 model image {
-  photo_id       Int          @id
-  photo_location String       @db.VarChar(100)
-  prompt         String
-  hashtags       String
-  date_created   DateTime?    @default(now())
-  created_by     String       @db.VarChar(10)
-  user_profile   user_profile @relation(fields: [created_by], references: [username], onDelete: Cascade, onUpdate: NoAction)
+  image_id     Int          @id @default(autoincrement())
+  path         String
+  prompt       String
+  hashtags     String
+  date_created DateTime?    @default(now())
+  created_by   String       @db.VarChar(10)
+  user_profile user_profile @relation(fields: [created_by], references: [username], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model user_profile {
