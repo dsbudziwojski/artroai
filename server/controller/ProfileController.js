@@ -37,3 +37,30 @@ export const getProfile = async (req, res) => {
         res.status(404).json({errorMsg: error.message})
     }
 }
+
+
+export const generateImage = async (req, res) => {
+    try {
+        // TODO
+    }
+    catch {
+        res.status(400).json({errorMsg: error.message})
+    }
+}
+
+export const getUniqueImage = async (req, res) => {
+    try {
+        const image = await prisma.images.findUnique({
+            where: {
+                image_id: req.params.image_id
+            }
+        })
+        if (image === null) {
+            throw new Error("No image exist")
+        }
+        res.status(200).json({image: image})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
