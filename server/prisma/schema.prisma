@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -6,36 +12,4 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-model follower {
-  id                                               Int          @id
-  user_id                                          String       @db.VarChar(10)
-  following_id                                     String       @db.VarChar(10)
-  date_followed                                    DateTime?    @default(now())
-  user_profile_follower_following_idTouser_profile user_profile @relation("follower_following_idTouser_profile", fields: [following_id], references: [username], onDelete: Cascade, onUpdate: NoAction)
-  user_profile_follower_user_idTouser_profile      user_profile @relation("follower_user_idTouser_profile", fields: [user_id], references: [username], onDelete: Cascade, onUpdate: NoAction)
-}
-
-model image {
-  image_id     Int          @id @default(autoincrement())
-  path         String
-  prompt       String
-  hashtags     String
-  date_created DateTime?    @default(now())
-  created_by   String       @db.VarChar(10)
-  user_profile user_profile @relation(fields: [created_by], references: [username], onDelete: Cascade, onUpdate: NoAction)
-}
-
-model user_profile {
-  username                                     String     @id @db.VarChar(10)
-  first_name                                   String     @db.VarChar(25)
-  last_name                                    String     @db.VarChar(25)
-  bio                                          String?
-  email                                        String     @db.VarChar(100)
-  date_created                                 DateTime?  @default(now())
-  isadmin                                      Boolean?
-  follower_follower_following_idTouser_profile follower[] @relation("follower_following_idTouser_profile")
-  follower_follower_user_idTouser_profile      follower[] @relation("follower_user_idTouser_profile")
-  image                                        image[]
 }
