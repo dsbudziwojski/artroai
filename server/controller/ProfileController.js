@@ -49,10 +49,14 @@ export const generateImage = async (req, res) => {
 }
 
 export const getUniqueImage = async (req, res) => {
+    const image_id = Number(req.params.image_id)
+    if (!Number.isInteger(image_id)) {
+        res.status(400).json({errorMsg: "Invalid image_id"})
+    }
     try {
-        const image = await prisma.images.findUnique({
+        const image = await prisma.image.findUnique({
             where: {
-                image_id: req.params.image_id
+                image_id: image_id
             }
         })
         if (image === null) {

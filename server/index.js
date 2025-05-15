@@ -39,6 +39,8 @@ app.get('api/test/users/:username', (req, res)=>{
   }
 })
 
+// END OF TESTING APIs
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
