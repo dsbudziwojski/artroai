@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom';
+import { filterPosts } from "../utils/searchFilter"
 
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 const mockPublicFeed = [
@@ -56,8 +57,11 @@ function Home() {
     // posts to be displayed in the feed
     const [posts, setPosts] = useState([]);
 
+    // posts to be displayed after filtering
+    const [displayedPosts, setDisplayedPosts] = useState([]);
+
     // will replace with current user's username
-    const myUsername = "justin";
+    const myUsername = "bob";
 
     // handle switch from public and private feed
     function handleFeedSwitch(type) {
@@ -115,11 +119,19 @@ function Home() {
                 }
             } catch (err) {
                 setPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
+
+                setDisplayedPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
             }
         }
 
         fetchPosts();
     }, [feedType]);
+
+    useEffect(() => {
+        // filter posts based on search query
+        const filtered = filterPosts(posts, searchQuery);
+        setDisplayedPosts(filtered);
+    }, [searchQuery, posts]);
 
     return (
         <div>
@@ -147,7 +159,7 @@ function Home() {
                     }}
                 >
                     {/* maps over all posts & render post details */}
-                    {posts.map((post) => (
+                    {displayedPosts.map((post) => (
                         <div key={post.photo_id} style={{ marginBottom: "1rem", border: "1px solid #ddd", padding: "0.5rem" }}>
 
                             <img src={post.photo_location} alt="post_img" style={{ width: "100%" }} />
