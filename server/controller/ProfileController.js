@@ -1,5 +1,21 @@
 import {PrismaClient} from "../generated/prisma/index.js";
 const prisma = new PrismaClient();
+import OpenAI from 'openai';
+import dotenv from 'dotenv';
+dotenv.config();
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from "url";
+
+const __filename=fileURLToPath(import.meta.url);
+const __dirname=path.dirname(__filename);
+
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+
+//console.log('OpenAI API Key:', process.env.OPENAI_API_KEY);
 
 export const createProfile = async (req, res) => {
     const { username, first_name, last_name, bio, email} = req.body
@@ -38,15 +54,87 @@ export const getProfile = async (req, res) => {
     }
 }
 
-
+//decode image rep as b_64 json write to generated_images directory and return full file path
+function saveBase64Im(base64Im, directory){
+    const buffer= Buffer.from(base64Im, 'base64');
+    const filename= `${Date.now()}.png`;
+    const filepath=path.join(directory,filename);
+    fs.writeFileSync(filepath,buffer);
+    return filepath;
+}
 export const generateImage = async (req, res) => {
     try {
         // TODO
+        const { prompt, created_by } = req.body;
+        
+        if(!prompt || prompt.trim() === '') {
+            throw new Error("Prompt required");
+        }
+
+        if(!created_by || prompt.trim() === '') {
+            throw new Error("username is required");
+        }
+
+
+        //call api to create images
+        const response= await openai.images.generate({
+            prompt,
+            n:1,
+            size: '512x512',
+            response_format: 'b64_json',
+        });
+
+        console.log(response.data[0].b64_json) //get the output of the api for testing
+
+        const base64imag= response.data[0].b64_json;
+
+        const dir=path.join(__dirname,'..', 'generated_images');
+
+        //store image as filepath
+
+        const fullFilePath= saveBase64Im(base64imag, dir); //call func
+
+        const relFilePath=path.relative(process.cwd(), fullFilePath);
+
+        //generate hashtag response
+
+        const hashtagResponse=await openai.chat.completions.create({
+            model: 'gpt-4',
+            messages:[
+                {role: 'system', content: 'You are a helpful assistant that generates hashtags.'},
+                {role: 'user', content: `Generate 2 relevant hashtags for the following prompt: "${prompt}`},
+            ],
+            max_tokens:10,
+            temperature: 0.7,
+
+        });
+
+        
+
+        //to get just imag generation comment all hashtag related stuff and created by from request body
+
+        const hashtags= hashtagResponse.choices[0].message.content.trim();
+        console.log(hashtags);//check if generating hashtags occurs
+
+        const savedImage= await prisma.image.create({
+            data:{
+                prompt,
+                path: relFilePath,
+                hashtags,
+                created_by,
+
+            },
+
+        });
+
+        res.status(200).json({image: savedImage});
+
     }
-    catch {
-        res.status(400).json({errorMsg: error.message})
+    catch(error) {
+        console.error('Error generating image: ', error);
+        res.status(400).json({errorMsg: error.message});
     }
-}
+};
 
 export const getUniqueImage = async (req, res) => {
     const image_id = Number(req.params.image_id)

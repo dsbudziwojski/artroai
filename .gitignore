@@ -3,6 +3,8 @@ node_modules/
 # Prisma generated client
 generated/
 
+#open ai apikey
+.env
 # IDE related stuff
 .idea/
 .vscode/

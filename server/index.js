@@ -2,6 +2,7 @@ import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import {createProfile, getProfile, getUniqueImage, getImagesForProfile} from "./controller/ProfileController.js";
+import { generateImage } from './controller/ProfileController.js';
 
 const app = express()
 const port = process.env.PORT || 5001
@@ -18,6 +19,9 @@ app.get('/api/users/:username', getProfile)
 app.get('/api/users/:username/images/:image_id', getUniqueImage)
 
 app.get('/api/users/:username/images', getImagesForProfile)
+
+//def post route for imag gen
+app.post('/api/generate-image', generateImage)
 
 // TESTING APIs FOR FRONTEND (while endpoints are still being worked on...)
 app.get('/api/test', (req, res) => {
