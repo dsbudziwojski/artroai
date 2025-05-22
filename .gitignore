@@ -22,7 +22,8 @@ server/.env
 
 # misc
 .DS_Store
-server/.env
+/client/.env
+/server/.env
 .env.local
 .env.*.local
 .env.development.local
