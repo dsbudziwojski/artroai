@@ -1,5 +1,6 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 const mockPublicFeed = [
@@ -42,6 +43,10 @@ const mockPrivateFeed = [
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 
 function Home() {
+
+    const { searchQuery } = useOutletContext();
+
+
     // used to navigate between pages
     const navigate = useNavigate();
     // tracks the current feed type (public/private)
