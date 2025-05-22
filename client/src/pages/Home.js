@@ -9,7 +9,7 @@ const mockPublicFeed = [
         photo_id: 1,
         photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
         prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        hashtags: "#cats #yes #legs",
+        hashtags: "#cats #no #legs",
         created_by: "bob",
         date_created: "2024",
     },
@@ -18,7 +18,7 @@ const mockPublicFeed = [
         photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
         prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         hashtags: "#cats #yes #legs",
-        created_by: "bob",
+        created_by: "lucy",
         date_created: "2024",
     }
 ];

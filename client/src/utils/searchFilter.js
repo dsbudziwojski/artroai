@@ -1,7 +1,7 @@
 /* 
     Filters an array of posts objects
 
-    - checks if searchQuery appears either in
+    checks if searchQuery appears either in:
         1. the hashtags of the post
         2. the username of the post creator
 */
