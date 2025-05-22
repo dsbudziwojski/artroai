@@ -20,7 +20,39 @@ const mockPublicFeed = [
         hashtags: "#cats #yes #legs",
         created_by: "lucy",
         date_created: "2024",
-    }
+    },
+    {
+        photo_id: 3,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
+    {
+        photo_id: 4,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
+    {
+        photo_id: 5,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
+    {
+        photo_id: 6,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
 ];
 
 const mockPrivateFeed = [
@@ -59,6 +91,9 @@ function Home() {
 
     // posts to be displayed after filtering
     const [displayedPosts, setDisplayedPosts] = useState([]);
+
+    // used for pagination
+    const [visibleCount, setVisibleCount] = useState(3);
 
     // will replace with current user's username
     const myUsername = "bob";
@@ -121,6 +156,8 @@ function Home() {
                 setPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
 
                 setDisplayedPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
+
+                setVisibleCount(3);
             }
         }
 
@@ -132,6 +169,15 @@ function Home() {
         const filtered = filterPosts(posts, searchQuery);
         setDisplayedPosts(filtered);
     }, [searchQuery, posts]);
+
+    // Handler for loading more posts
+    const handleLoadMore = () => {
+        setVisibleCount(prev => prev + 3);
+    };
+
+    // Only show up to visibleCount posts
+    const visiblePosts = displayedPosts.slice(0, visibleCount);
+
 
     return (
         <div>
@@ -159,21 +205,30 @@ function Home() {
                     }}
                 >
                     {/* maps over all posts & render post details */}
-                    {displayedPosts.map((post) => (
-                        <div key={post.photo_id} style={{ marginBottom: "1rem", border: "1px solid #ddd", padding: "0.5rem" }}>
+                    {visiblePosts.map((post) => (<div key={post.photo_id} style={{ marginBottom: "1rem", border: "1px solid #ddd", padding: "0.5rem" }}>
 
-                            <img src={post.photo_location} alt="post_img" style={{ width: "100%" }} />
-                            <p><strong>Prompt:</strong> {post.prompt}</p>
-                            <p><strong>By:</strong> {post.created_by}</p>
-                            <p><strong>Tags:</strong> {post.hashtags}</p>
-                            <p style={{ fontSize: "0.8rem", color: "gray" }}>{post.date_created}</p>
-                        </div>
+                        <img src={post.photo_location} alt="post_img" style={{ width: "100%" }} />
+                        <p><strong>Prompt:</strong> {post.prompt}</p>
+                        <p><strong>By:</strong> {post.created_by}</p>
+                        <p><strong>Tags:</strong> {post.hashtags}</p>
+                        <p style={{ fontSize: "0.8rem", color: "gray" }}>{post.date_created}</p>
+                    </div>
                     ))}
                 </div>
+
+                {/* Load More button */}
+                {visibleCount < displayedPosts.length && (
+                    <button onClick={handleLoadMore} style={{ marginTop: "1rem" }}>
+                        Load More
+                    </button>
+                )}
+
             </div>
         </div>
     );
 
+    {
+    }
 }
 
 export default Home;
