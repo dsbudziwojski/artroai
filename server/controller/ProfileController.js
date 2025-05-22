@@ -10,10 +10,11 @@ import { fileURLToPath } from "url";
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
 
-
+/* COMMENTED OUT JUST FOR TESTING
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
+*/
 
 //console.log('OpenAI API Key:', process.env.OPENAI_API_KEY);
 
