@@ -1,7 +1,7 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import {createProfile, getProfile, getUniqueImage} from "./controller/ProfileController.js";
+import {createProfile, getProfile, getUniqueImage, getImagesForProfile} from "./controller/ProfileController.js";
 
 const app = express()
 const port = process.env.PORT || 5001
@@ -17,10 +17,13 @@ app.get('/api/users/:username', getProfile)
 
 app.get('/api/users/:username/images/:image_id', getUniqueImage)
 
+app.get('/api/users/:username/images', getImagesForProfile)
+
 // TESTING APIs FOR FRONTEND (while endpoints are still being worked on...)
 app.get('/api/test', (req, res) => {
   res.json({serverMsg: 'Hello from server!'})
 })
+
 app.get('api/test/users/:username', (req, res)=>{
   const username = req.params.username
   if (username === "oh-a-cai"){

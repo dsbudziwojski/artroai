@@ -29,7 +29,7 @@ export const getProfile = async (req, res) => {
             where: {username: req.params.username}
         })
         if (profile === null) {
-           throw new Error("No profile exits")
+           throw new Error("No profile exists")
         }
         res.status(200).json({profile: profile})
     }
@@ -63,6 +63,23 @@ export const getUniqueImage = async (req, res) => {
             throw new Error("No image exist")
         }
         res.status(200).json({image: image})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+export const getImagesForProfile = async (req, res) => {
+    try {
+        const images = await prisma.image.findMany({
+            where: {
+                created_by: req.params.username
+            }
+        })
+        if (images === null) {
+            throw new Error("No images exist")
+        }
+        res.status(200).json({images: images})
     }
     catch (error) {
         res.status(404).json({errorMsg: error.message})
