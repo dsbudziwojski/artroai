@@ -1,8 +1,8 @@
 import express from 'express'
+import authenticate from './authenticate.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import {createProfile, getProfile, getUniqueImage, getImagesForProfile} from "./controller/ProfileController.js";
-import { generateImage } from './controller/ProfileController.js';
+import {createProfile, getProfile, getUniqueImage, getImagesForProfile, generateImage} from "./controller/ProfileController.js";
 
 const app = express()
 const port = process.env.PORT || 5001
@@ -12,23 +12,23 @@ const __dirname = path.dirname(__filename)
 app.use(express.json())
 app.use('/api/generated-images', express.static(path.join(__dirname, 'generated-images')));
 
-app.post('/api/users', createProfile)
+app.post('/api/users', authenticate, createProfile)
 
-app.get('/api/users/:username', getProfile)
+app.get('/api/users/:username', authenticate, getProfile)
 
-app.get('/api/users/:username/images/:image_id', getUniqueImage)
+app.get('/api/users/:username/images/:image_id', authenticate, getUniqueImage)
 
-app.get('/api/users/:username/images', getImagesForProfile)
+app.get('/api/users/:username/images', authenticate, getImagesForProfile)
 
 //def post route for imag gen
-app.post('/api/generate-image', generateImage)
+app.post('/api/generate-image', authenticate, generateImage)
 
 // TESTING APIs FOR FRONTEND (while endpoints are still being worked on...)
 app.get('/api/test', (req, res) => {
   res.json({serverMsg: 'Hello from server!'})
 })
 
-app.get('api/test/users/:username', (req, res)=>{
+app.get('/api/test/users/:username', (req, res)=>{
   const username = req.params.username
   if (username === "oh-a-cai"){
     const profile = {
