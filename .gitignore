@@ -4,7 +4,7 @@ node_modules/
 generated/
 
 #open ai apikey
-.env
+server/.env
 # IDE related stuff
 .idea/
 .vscode/
@@ -22,7 +22,8 @@ generated/
 
 # misc
 .DS_Store
-.env
+/client/.env
+/server/.env
 .env.local
 .env.*.local
 .env.development.local
