@@ -10,6 +10,35 @@ import { fileURLToPath } from "url";
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
 
+const validateUser = async (username) => {
+    const user = await prisma.user_profile.findUnique({
+        where: {username: username}
+    })
+    if (user === null) {
+        throw new Error("No user exists")
+    }
+}
+
+const followersOrFollowingList = async(username, whichList) => {
+    // assumes valid username
+    if (whichList === "following") {
+        const following = await prisma.follower.findMany({
+            where: {
+                following_id: username
+            }
+        })
+        return following
+    } else if (whichList === "followers") {
+        const followers = await prisma.follower.findMany({
+            where: {
+                user_id: username
+            }
+        })
+        return followers
+    } else {
+        console.log("invalid input for whichList")
+    }
+}
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -160,12 +189,7 @@ export const getUniqueImage = async (req, res) => {
 export const getImagesForProfile = async (req, res) => {
     const username = req.params.username
     try {
-        const user = await prisma.user_profile.findUnique({
-            where: {username: username}
-        })
-        if (user === null) {
-            throw new Error("No user exists")
-        }
+        await validateUser(username)
         const images = await prisma.image.findMany({
             where: {
                 created_by: username
@@ -184,17 +208,8 @@ export const getImagesForProfile = async (req, res) => {
 export const getFollowers = async (req, res) => {
     const username = req.params.username
     try {
-        const user = await prisma.user_profile.findUnique({
-            where: {username: username}
-        })
-        if (user === null) {
-            throw new Error("No user exists")
-        }
-        const followers = await prisma.follower.findMany({
-            where: {
-                user_id: username
-            }
-        })
+        await validateUser(username)
+        const followers = followersOrFollowingList(username)
         if (followers.length === 0) {
             res.status(200).json({followers: [], count: 0})
         }
@@ -208,17 +223,8 @@ export const getFollowers = async (req, res) => {
 export const getFollowing = async (req, res) => {
     const username = req.params.username
     try {
-        const user = await prisma.user_profile.findUnique({
-            where: {username: username}
-        })
-        if (user === null) {
-            throw new Error("No user exists")
-        }
-        const following = await prisma.follower.findMany({
-            where: {
-                following_id: username
-            }
-        })
+        await validateUser(username)
+        const following = followersOrFollowingList(username, "following")
         if (following.length === 0) {
             res.status(200).json({following: [], count: 0})
         }
@@ -229,4 +235,27 @@ export const getFollowing = async (req, res) => {
     }
 }
 
+export const followOther = async (req, res) => {
+    const username = req.params.username
+    const { following_id } = req.body
+    try {
+        if (username === "" || following_id === "") {
+            throw new Error("required input was not valid")
+        }
+        await validateUser(username)
+        await prisma.follower.create({
+            data: {
+                user_id: username,
+                following_id: following_id
+            },
+        })
+        const following = followersOrFollowingList(username)
+        if (following.length === 0) {
+            res.status(200).json({following: [], count: 0})
+        }
+        res.status(200).json({following: following, count: following.length})
+    } catch (error) {
+        res.status(400).json({errorMsg: error.message})
+    }
+}
 
