@@ -158,13 +158,20 @@ export const getUniqueImage = async (req, res) => {
 }
 
 export const getImagesForProfile = async (req, res) => {
+    const username = req.params.username
     try {
+        const user = await prisma.user_profile.findUnique({
+            where: {username: username}
+        })
+        if (user === null) {
+            throw new Error("No user exists")
+        }
         const images = await prisma.image.findMany({
             where: {
-                created_by: req.params.username
+                created_by: username
             }
         })
-        if (images === null) {
+        if (images.length === 0) {
             throw new Error("No images exist")
         }
         res.status(200).json({images: images})
@@ -173,3 +180,30 @@ export const getImagesForProfile = async (req, res) => {
         res.status(404).json({errorMsg: error.message})
     }
 }
+
+export const getFollowers = async (req, res) => {
+    const username = req.params.username
+    try {
+        const user = await prisma.user_profile.findUnique({
+            where: {username: username}
+        })
+        if (user === null) {
+            throw new Error("No user exists")
+        }
+        const followers = await prisma.follower.findMany({
+            where: {
+                user_id: username
+            }
+        })
+        if (followers.length === 0) {
+            res.status(200).json({followers: [], count: 0})
+        }
+        res.status(200).json({followers: followers, count: followers.length})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+
+
