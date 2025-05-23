@@ -243,19 +243,38 @@ export const followOther = async (req, res) => {
             throw new Error("required input was not valid")
         }
         await validateUser(username)
+        await validateUser(following_id)
         await prisma.follower.create({
             data: {
                 user_id: username,
                 following_id: following_id
             },
         })
-        const following = followersOrFollowingList(username)
-        if (following.length === 0) {
-            res.status(200).json({following: [], count: 0})
-        }
+        const following = await followersOrFollowingList(username)
         res.status(200).json({following: following, count: following.length})
     } catch (error) {
         res.status(400).json({errorMsg: error.message})
     }
 }
 
+export const unfollowOther = async (req, res) => {
+    const username = req.params.username
+    const { following_id } = req.body
+    try {
+        if (username === "" || following_id === "") {
+            throw new Error("required input was not valid")
+        }
+        await validateUser(username)
+        await validateUser(following_id)
+        await prisma.follower.delete({
+            where:{
+                user_id: username,
+                following_id: following_id
+            }
+        })
+        const following= await followersOrFollowingList(username)
+        res.status(200).json({following: following, count: following.length})
+    } catch (error) {
+        res.status(400).json({errorMsg: error.message})
+    }
+}
