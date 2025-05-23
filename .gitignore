@@ -3,6 +3,8 @@ node_modules/
 # Prisma generated client
 generated/
 
+#open ai apikey
+server/.env
 # IDE related stuff
 .idea/
 .vscode/
@@ -20,7 +22,8 @@ generated/
 
 # misc
 .DS_Store
-.env
+/client/.env
+/server/.env
 .env.local
 .env.*.local
 .env.development.local

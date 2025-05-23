@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import DailyPopup from '../components/DailyPopup';
 
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 const mockPublicFeed = [
@@ -44,6 +45,9 @@ const mockPrivateFeed = [
 function Home() {
     // used to navigate between pages
     const navigate = useNavigate();
+
+    // used for timed popup
+    const [timedPopup, setTimedPopup] = useState(false);
     // tracks the current feed type (public/private)
     // "Private" by default
     const [feedType, setFeedType] = useState("Private");
@@ -52,7 +56,7 @@ function Home() {
     const [posts, setPosts] = useState([]);
 
     // will replace with current user's username
-    const myUsername = "justin";
+    const myUsername = "oh-a-cai";
 
     // handle switch from public and private feed
     function handleFeedSwitch(type) {
@@ -115,12 +119,23 @@ function Home() {
 
         fetchPosts();
     }, [feedType]);
+    
+    // popup timer which only activates once per page access
+    useEffect(() => {
+        setTimeout(() => {
+            setTimedPopup(true);
+        }, 5000);
+    }, []);
 
     return (
         <div>
             <div>
-                <button onClick={() => navigate("/profile")}>User Profile</button>
+                <button onClick={() => navigate(`/profile/${myUsername}`)}>User Profile</button>
             </div>
+            <DailyPopup trigger={timedPopup} setTrigger={setTimedPopup}>
+                <h3>Hey {myUsername}!</h3>
+                <p>Make sure to generate your daily post! Your current streak is: </p>
+            </DailyPopup>
             <div style={{ padding: "1rem" }}>
                 {/* toggle public and private feeds */}
                 <div>
