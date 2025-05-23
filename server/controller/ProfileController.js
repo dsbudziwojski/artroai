@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
 
+<<<<<<< HEAD
 const validateUser = async (username) => {
     const user = await prisma.user_profile.findUnique({
         where: {username: username}
@@ -39,12 +40,6 @@ const followersOrFollowingList = async(username, whichList) => {
         console.log("invalid input for whichList")
     }
 }
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-
-//console.log('OpenAI API Key:', process.env.OPENAI_API_KEY);
 
 export const createProfile = async (req, res) => {
     const { username, first_name, last_name, bio, email} = req.body

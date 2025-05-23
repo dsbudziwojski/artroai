@@ -24,6 +24,7 @@ app.get('/api/users/:username/images', authenticate, getImagesForProfile)
 app.post('/api/generate-image', authenticate, generateImage)
 
 // TESTING APIs FOR FRONTEND (while endpoints are still being worked on...)
+
 app.get('/api/test', (req, res) => {
   res.json({serverMsg: 'Hello from server!'})
 })
@@ -45,6 +46,8 @@ app.get('/api/test/users/:username', (req, res)=>{
     res.status(404).json({errorMsg: "No profile exists"})
   }
 })
+
+
 
 // END OF TESTING APIs
 

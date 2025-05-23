@@ -1,0 +1,15 @@
+import React from 'react'
+import "./FollowerPopup.css"
+
+function Popup(props){
+    return (props.trigger) ? (
+        <div className="popup">
+            <div className="popup-inner">
+                <button className="popup-close" onClick={() => props.setTrigger(false)}>Close</button>
+                {props.children}
+            </div>
+        </div>
+    ) : "";
+}
+
+export default Popup
