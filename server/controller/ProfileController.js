@@ -205,5 +205,28 @@ export const getFollowers = async (req, res) => {
     }
 }
 
+export const getFollowing = async (req, res) => {
+    const username = req.params.username
+    try {
+        const user = await prisma.user_profile.findUnique({
+            where: {username: username}
+        })
+        if (user === null) {
+            throw new Error("No user exists")
+        }
+        const following = await prisma.follower.findMany({
+            where: {
+                following_id: username
+            }
+        })
+        if (following.length === 0) {
+            res.status(200).json({following: [], count: 0})
+        }
+        res.status(200).json({following: following, count: following.length})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
 
 
