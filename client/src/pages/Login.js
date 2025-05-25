@@ -1,37 +1,21 @@
 import {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 
 function Login() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [action, setAction] = useState("Sign Up");
     const navigate = useNavigate();
     return (
-        <div className="container">
-            <div className="header">
-                <div className="text">{action}</div>
-            </div>
-            <div className="inputs">
-                {action==="Login"?<div></div>:<div className="input">
-                    <img src="" alt="" />
-                    <input type="text" placeholder="Name" onChange={(e) => {setName(e.target.value)}} required/>
-                </div>}
-                <div className="input">
-                    <img src="" alt="" />
-                    <input type="email" placeholder="Email" onChange={(e) => {setEmail(e.target.value)}} required/>
-                </div>
-                <div className="input">
-                    <img src="" alt="" />
-                    <input type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}} required/>
-                </div>
-            </div>
-            <div className="submits">
-                {action==="Sign Up"?<button onClick={() => navigate("/home")}>Sign Up</button>:<button onClick={() => navigate("/home")}>Login</button>}
-            </div>
-            {action==="Sign Up"?<div></div>:<div className="forgot-password">Forgot Password? <span onClick={() => navigate("/lostpassword")}>Click Here!</span></div>}
-            <div className="switches">
-                {action==="Sign Up"?<div onClick={() => {setAction("Login")}}>Switch to Login</div>:<div onClick={() => {setAction("Sign Up")}}>Switch to Sign Up</div>}
+        <div className="bg-zinc-900 h-screen flex justify-center items-center">
+            <div className="bg-zinc-800 p-10 rounded-lg text-center flex flex-col gap-2 w-96">
+                <h1 className="text-2xl text-white mb-2">Login</h1>
+                <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="text" placeholder="Name" onChange={(e) => {setName(e.target.value)}} required/>
+                <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="email" placeholder="Email" onChange={(e) => {setEmail(e.target.value)}} required/>
+                <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}} required/>
+                <button className="bg-violet-500 text-sm text-zinc-100 p-1.5 w-full rounded" onClick={() => navigate("/home")}>Login</button>
+                <div className="text-zinc-300 text-xs">Forgot Password? <span className="text-zinc-200 underline" onClick={() => navigate("/lostpassword")}>Click Here</span></div>
+                <NavLink to={"/signup" /*ADD THIS PLEASE*/} className="text-violet-400 text-sm mt-4"><button>Switch to Sign Up →</button></NavLink>
             </div>
         </div>
     );

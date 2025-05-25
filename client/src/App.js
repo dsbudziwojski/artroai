@@ -4,7 +4,6 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Profile from "./pages/Profile";
 import LostPassword from "./pages/LostPassword";
 import NotFound from "./pages/NotFound";
-import './App.css';
 
 function App() {
   return (
