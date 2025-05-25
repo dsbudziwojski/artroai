@@ -4,11 +4,13 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Profile from "./pages/Profile";
 import LostPassword from "./pages/LostPassword";
 import NotFound from "./pages/NotFound";
+import SignUp from "./pages/SignUp";
 
 function App() {
   return (
       <BrowserRouter>
         <Routes>
+          <Route path="/signup" element={<SignUp />} />
           <Route path="/" element={<Login />}/>
           <Route path="/home" element={<Home />}/>
           <Route path="/profile/:username" element={<Profile />}/>
