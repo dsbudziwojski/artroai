@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import DailyPopup from '../components/DailyPopup';
+import Navbar from "../components/Navbar";
 
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 const mockPublicFeed = [
@@ -128,45 +129,33 @@ function Home() {
     }, []);
 
     return (
-        <div>
-            <div>
-                <button onClick={() => navigate(`/profile/${myUsername}`)}>User Profile</button>
-            </div>
-            <DailyPopup trigger={timedPopup} setTrigger={setTimedPopup}>
-                <h3>Hey {myUsername}!</h3>
-                <p>Make sure to generate your daily post! Your current streak is: </p>
-            </DailyPopup>
-            <div style={{ padding: "1rem" }}>
-                {/* toggle public and private feeds */}
-                <div>
-                    <button onClick={() => handleFeedSwitch("Public")}>Public Feed</button>
-                    <button onClick={() => handleFeedSwitch("Private")}>Private Feed</button>
-                </div>
+        <div className="bg-zinc-900 h-screen"> {/* bg-zinc-900*/}
+            <Navbar myUsername={myUsername} />
+            <div className="h-screen m-5 flex justify-content overflow-auto bg-zinc-900">
+                <div className="text-zinc-100 justify-center">
+                    {/* toggle public and private feeds */}
+                    <nav>
+                        <button onClick={() => handleFeedSwitch("Public")}>Public Feed</button>
+                        <button onClick={() => handleFeedSwitch("Private")}>Private Feed</button>
+                    </nav>
 
-                {/* displays feed type */}
-                <h2>{feedType} Feed</h2>
+                    {/* displays feed type */}
+                    <h2>{feedType} Feed</h2>
 
-                {/* scrollable container containing posts */}
-                <div
-                    style={{
-                        height: "400px",
-                        overflowY: "scroll",
-                        border: "1px solid gray",
-                        marginTop: "1rem",
-                        padding: "0.5rem",
-                    }}
-                >
-                    {/* maps over all posts & render post details */}
-                    {posts.map((post) => (
-                        <div key={post.photo_id} style={{ marginBottom: "1rem", border: "1px solid #ddd", padding: "0.5rem" }}>
+                    {/* scrollable container containing posts */}
+                    <div>
+                        {/* maps over all posts & render post details */}
+                        {posts.map((post) => (
+                            <div key={post.photo_id}>
 
-                            <img src={post.photo_location} alt="post_img" style={{ width: "100%" }} />
-                            <p><strong>Prompt:</strong> {post.prompt}</p>
-                            <p><strong>By:</strong> {post.created_by}</p>
-                            <p><strong>Tags:</strong> {post.hashtags}</p>
-                            <p style={{ fontSize: "0.8rem", color: "gray" }}>{post.date_created}</p>
-                        </div>
-                    ))}
+                                <img src={post.photo_location} alt="post_img" style={{ width: "100%" }} />
+                                <p><strong>Prompt:</strong> {post.prompt}</p>
+                                <p><strong>By:</strong> {post.created_by}</p>
+                                <p><strong>Tags:</strong> {post.hashtags}</p>
+                                <p style={{ fontSize: "0.8rem", color: "gray" }}>{post.date_created}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
@@ -175,3 +164,9 @@ function Home() {
 }
 
 export default Home;
+/*
+* <DailyPopup trigger={timedPopup} setTrigger={setTimedPopup}>
+                    <h3>Hey {myUsername}!</h3>
+                    <p>Make sure to generate your daily post! Your current streak is: </p>
+                </DailyPopup>
+* */

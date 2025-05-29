@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import FollowerPopup from '../components/FollowerPopup';
+import Navbar from "../components/Navbar";
 
 function Profile() {
     const { username } = useParams();
@@ -41,6 +42,7 @@ function Profile() {
 
     return (
         <div>
+            <Navbar myUsername={username}></Navbar>
             {userData ? (
                 <div>
                     <div>
