@@ -9,11 +9,9 @@ export function filterPosts(posts, searchQuery) {
     const normalizedQuery = searchQuery.toLowerCase().trim();
 
     return posts.filter(post => {
-        const tags = post.hashtags?.toLowerCase().split('#').filter(Boolean) || [];
+        const hashtags = post.hashtags?.toLowerCase() || "";
         const user = post.created_by?.toLowerCase() || "";
 
-        // check if any tag contains the searchQuery
-        return tags.some(tag => tag.includes(normalizedQuery)) ||
-            user.includes(normalizedQuery);
+        return hashtags.includes(normalizedQuery) || user.includes(normalizedQuery);
     });
 }
