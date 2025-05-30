@@ -23,6 +23,11 @@ app.get('/api/users/:username/images', authenticate, getImagesForProfile)
 //def post route for imag gen
 app.post('/api/generate-image', authenticate, generateImage)
 
+//def post route fot authetntication
+app.post('/api/protected-route',authenticate, (req,res) =>{
+  res.status(200).json({message:'Authenticated!', user: req.user});
+});
+
 // TESTING APIs FOR FRONTEND (while endpoints are still being worked on...)
 
 app.get('/api/test', (req, res) => {
