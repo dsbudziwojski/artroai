@@ -10,6 +10,9 @@ import { fileURLToPath } from "url";
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
 
+const feedPage = {
+
+}
 
 const validateUser = async (username) => {
     const user = await prisma.user_profile.findUnique({
@@ -194,6 +197,28 @@ export const getImagesForProfile = async (req, res) => {
             throw new Error("No images exist")
         }
         res.status(200).json({images: images})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+export const getPublicImages = async (req, res) => {
+    try {
+        const publicImages = await prisma.images.findMany(
+
+         )
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+export const getFollowingImages = async (req, res) => {
+    try {
+        const followingImages = await prisma.images.findMany({
+
+            })
     }
     catch (error) {
         res.status(404).json({errorMsg: error.message})

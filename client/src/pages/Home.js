@@ -129,26 +129,48 @@ function Home() {
     }, []);
 
     return (
-        <div className="bg-zinc-900 h-screen"> {/* bg-zinc-900*/}
-            <Navbar myUsername={myUsername} />
-            <div className="h-screen m-5 flex justify-content overflow-auto bg-zinc-900">
+        <div className="bg-zinc-900 min-h-screen"> {/* bg-zinc-900*/}
+            <DailyPopup trigger={timedPopup} setTrigger={setTimedPopup}>
+                <h3>Hey {myUsername}!</h3>
+                <p>Make sure to generate your daily post! Your current streak is: </p>
+            </DailyPopup>
+            <Navbar myUsername={myUsername}/>
+            <div className="pt-20 h-full flex overflow-auto bg-zinc-900">
                 <div className="text-zinc-100 justify-center">
                     {/* toggle public and private feeds */}
-                    <nav>
-                        <button onClick={() => handleFeedSwitch("Public")}>Public Feed</button>
-                        <button onClick={() => handleFeedSwitch("Private")}>Private Feed</button>
-                    </nav>
-
-                    {/* displays feed type */}
-                    <h2>{feedType} Feed</h2>
-
+                    <div className="bg-zinc-800 mx-10 my-5 rounded-md">
+                        <nav className="p-3 flex text-zinc-100 justify-center rounded-md">
+                            <button
+                                className={`
+                                px-3 py-2
+                                ${feedType === "Public" ? "text-zinc-100" : "text-zinc-500" }
+                                `}
+                                onClick={() => handleFeedSwitch("Public")}>
+                                Public Feed
+                            </button>
+                            <button
+                                className={`
+                                px-3 py-2
+                                ${feedType === "Private" ? "text-zinc-100" : "text-zinc-500" }
+                                `}
+                                onClick={() => handleFeedSwitch("Private")}>
+                                Private Feed
+                            </button>
+                        </nav>
+                    </div>
                     {/* scrollable container containing posts */}
-                    <div>
+                    <div className="">
                         {/* maps over all posts & render post details */}
                         {posts.map((post) => (
-                            <div key={post.photo_id}>
-
-                                <img src={post.photo_location} alt="post_img" style={{ width: "100%" }} />
+                            <div
+                                className="bg-zinc-800 mx-10 my-5 p-10 flex-col rounded-md"
+                                key={post.photo_id}
+                            >
+                                <img
+                                    className="w-full p-10"
+                                    src={post.photo_location}
+                                    alt="post_img"
+                                />
                                 <p><strong>Prompt:</strong> {post.prompt}</p>
                                 <p><strong>By:</strong> {post.created_by}</p>
                                 <p><strong>Tags:</strong> {post.hashtags}</p>
@@ -162,11 +184,4 @@ function Home() {
     );
 
 }
-
 export default Home;
-/*
-* <DailyPopup trigger={timedPopup} setTrigger={setTimedPopup}>
-                    <h3>Hey {myUsername}!</h3>
-                    <p>Make sure to generate your daily post! Your current streak is: </p>
-                </DailyPopup>
-* */
