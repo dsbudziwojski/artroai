@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 app.use(express.json())
-app.use('/api/generated-images', express.static(path.join(__dirname, 'generated-images')));
+app.use('/api/generated-images', express.static(path.join(__dirname, 'generated_images')));
 
 app.post('/api/users', authenticate, createProfile)
 

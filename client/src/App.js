@@ -5,12 +5,14 @@ import Profile from "./pages/Profile";
 import LostPassword from "./pages/LostPassword";
 import NotFound from "./pages/NotFound";
 import SignUp from "./pages/SignUp";
+import Search from "./pages/Search";
 
 function App() {
   return (
       <BrowserRouter>
         <Routes>
           <Route path="/signup" element={<SignUp />} />
+            <Route path="/search" element={<Search />} />
           <Route path="/" element={<Login />}/>
           <Route path="/home" element={<Home />}/>
           <Route path="/profile/:username" element={<Profile />}/>
