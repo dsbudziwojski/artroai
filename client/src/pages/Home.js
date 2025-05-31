@@ -1,6 +1,10 @@
-import {useEffect, useState} from 'react';
+import { use, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DailyPopup from '../components/DailyPopup';
+import Navbar from "../components/Navbar";
+import { getAuth, onAuthStateChanged} from "firebase/auth";
+import { useOutletContext } from 'react-router-dom';
+import { filterPosts } from "../utils/searchFilter"
 
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 const mockPublicFeed = [
@@ -8,7 +12,7 @@ const mockPublicFeed = [
         photo_id: 1,
         photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
         prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        hashtags: "#cats #yes #legs",
+        hashtags: "#cats #no #legs",
         created_by: "bob",
         date_created: "2024",
     },
@@ -17,9 +21,41 @@ const mockPublicFeed = [
         photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
         prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         hashtags: "#cats #yes #legs",
-        created_by: "bob",
+        created_by: "lucy",
         date_created: "2024",
-    }
+    },
+    {
+        photo_id: 3,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
+    {
+        photo_id: 4,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
+    {
+        photo_id: 5,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
+    {
+        photo_id: 6,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
 ];
 
 const mockPrivateFeed = [
@@ -43,6 +79,8 @@ const mockPrivateFeed = [
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 
 function Home() {
+
+
     // used to navigate between pages
     const navigate = useNavigate();
 
@@ -55,8 +93,15 @@ function Home() {
     // posts to be displayed in the feed
     const [posts, setPosts] = useState([]);
 
-    // will replace with current user's username
-    const myUsername = "oh-a-cai";
+    // posts to be displayed after filtering
+    const [displayedPosts, setDisplayedPosts] = useState([]);
+
+    // used for pagination
+    const [visibleCount, setVisibleCount] = useState(3);
+
+    const auth = getAuth();
+    const [user, setUser] = useState(null);
+    const myUsername = user;
 
     // handle switch from public and private feed
     function handleFeedSwitch(type) {
@@ -114,12 +159,16 @@ function Home() {
                 }
             } catch (err) {
                 setPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
+
+                setDisplayedPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
+
+                setVisibleCount(3);
             }
         }
 
         fetchPosts();
     }, [feedType]);
-    
+
     // popup timer which only activates once per page access
     useEffect(() => {
         setTimeout(() => {
@@ -127,51 +176,93 @@ function Home() {
         }, 5000);
     }, []);
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser?.email.split('@')[0])
+        });
+        return () => unsubscribe(); // clean up listener
+      }, []);
+
+    // move to search
+    /*useEffect(() => {
+        // filter posts based on search query
+        const filtered = filterPosts(posts, searchQuery);
+        setDisplayedPosts(filtered);
+    }, [searchQuery, posts]);*/
+
+    // Handler for loading more posts
+    const handleLoadMore = () => {
+        setVisibleCount(prev => prev + 3);
+    };
+
+    // Only show up to visibleCount posts
+    const visiblePosts = displayedPosts.slice(0, visibleCount);
+
+
     return (
-        <div>
-            <div>
-                <button onClick={() => navigate(`/profile/${myUsername}`)}>User Profile</button>
-            </div>
+        <div className="bg-zinc-900 min-h-screen"> {/* bg-zinc-900*/}
             <DailyPopup trigger={timedPopup} setTrigger={setTimedPopup}>
                 <h3>Hey {myUsername}!</h3>
                 <p>Make sure to generate your daily post! Your current streak is: </p>
             </DailyPopup>
-            <div style={{ padding: "1rem" }}>
-                {/* toggle public and private feeds */}
-                <div>
-                    <button onClick={() => handleFeedSwitch("Public")}>Public Feed</button>
-                    <button onClick={() => handleFeedSwitch("Private")}>Private Feed</button>
+            <Navbar myUsername={myUsername} />
+            <div className="pt-20 h-full flex overflow-auto bg-zinc-900">
+                <div className="text-zinc-100 justify-center">
+                    {/* toggle public and private feeds */}
+                    <div className="bg-zinc-800 mx-10 my-5 rounded-md">
+                        <nav className="p-3 flex text-zinc-100 justify-center rounded-md">
+                            <button
+                                className={`
+                                px-3 py-2
+                                ${feedType === "Public" ? "text-zinc-100" : "text-zinc-500"}
+                                `}
+                                onClick={() => handleFeedSwitch("Public")}>
+                                Public Feed
+                            </button>
+                            <button
+                                className={`
+                                px-3 py-2
+                                ${feedType === "Private" ? "text-zinc-100" : "text-zinc-500"}
+                                `}
+                                onClick={() => handleFeedSwitch("Private")}>
+                                Private Feed
+                            </button>
+                        </nav>
+                    </div>
+                    {/* scrollable container containing posts */}
+                    <div className="">
+                        {/* maps over all posts & render post details */}
+                        {posts.map((post) => (
+                            <div
+                                className="bg-zinc-800 mx-10 my-5 p-10 flex-col rounded-md"
+                                key={post.photo_id}
+                            >
+                                <img
+                                    className="w-full p-10"
+                                    src={post.photo_location}
+                                    alt="post_img"
+                                />
+                                <p><strong>Prompt:</strong> {post.prompt}</p>
+                                <p><strong>By:</strong> {post.created_by}</p>
+                                <p><strong>Tags:</strong> {post.hashtags}</p>
+                                <p style={{ fontSize: "0.8rem", color: "gray" }}>{post.date_created}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
-                {/* displays feed type */}
-                <h2>{feedType} Feed</h2>
+                {/* Load More button Formatting needed
+                {visibleCount < displayedPosts.length && (
+                    <button onClick={handleLoadMore} style={{ marginTop: "1rem" }}>
+                        Load More
+                    </button>
+                )}*/}
 
-                {/* scrollable container containing posts */}
-                <div
-                    style={{
-                        height: "400px",
-                        overflowY: "scroll",
-                        border: "1px solid gray",
-                        marginTop: "1rem",
-                        padding: "0.5rem",
-                    }}
-                >
-                    {/* maps over all posts & render post details */}
-                    {posts.map((post) => (
-                        <div key={post.photo_id} style={{ marginBottom: "1rem", border: "1px solid #ddd", padding: "0.5rem" }}>
-
-                            <img src={post.photo_location} alt="post_img" style={{ width: "100%" }} />
-                            <p><strong>Prompt:</strong> {post.prompt}</p>
-                            <p><strong>By:</strong> {post.created_by}</p>
-                            <p><strong>Tags:</strong> {post.hashtags}</p>
-                            <p style={{ fontSize: "0.8rem", color: "gray" }}>{post.date_created}</p>
-                        </div>
-                    ))}
-                </div>
             </div>
         </div>
     );
 
+    {
+    }
 }
-
 export default Home;

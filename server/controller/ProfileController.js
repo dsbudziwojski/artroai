@@ -10,6 +10,9 @@ import { fileURLToPath } from "url";
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
 
+const feedPage = {
+
+}
 
 const validateUser = async (username) => {
     const user = await prisma.user_profile.findUnique({
@@ -200,11 +203,33 @@ export const getImagesForProfile = async (req, res) => {
     }
 }
 
+export const getPublicImages = async (req, res) => {
+    try {
+        const publicImages = await prisma.images.findMany(
+
+         )
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+export const getFollowingImages = async (req, res) => {
+    try {
+        const followingImages = await prisma.images.findMany({
+
+            })
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
 export const getFollowers = async (req, res) => {
     const username = req.params.username
     try {
         await validateUser(username)
-        const followers = followersOrFollowingList(username)
+        const followers = await followersOrFollowingList(username, "followers")
         if (followers.length === 0) {
             res.status(200).json({followers: [], count: 0})
         }
@@ -219,7 +244,7 @@ export const getFollowing = async (req, res) => {
     const username = req.params.username
     try {
         await validateUser(username)
-        const following = followersOrFollowingList(username, "following")
+        const following = await followersOrFollowingList(username, "following")
         if (following.length === 0) {
             res.status(200).json({following: [], count: 0})
         }

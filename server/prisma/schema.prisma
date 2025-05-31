@@ -9,7 +9,7 @@ datasource db {
 }
 
 model follower {
-  id                                               Int          @id
+  id                                               Int          @id @default(autoincrement())
   user_id                                          String       @db.VarChar(10)
   following_id                                     String       @db.VarChar(10)
   date_followed                                    DateTime?    @default(now())
