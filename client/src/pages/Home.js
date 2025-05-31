@@ -1,7 +1,9 @@
-import {useEffect, useState} from 'react';
+import { use, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DailyPopup from '../components/DailyPopup';
 import Navbar from "../components/Navbar";
+import { useOutletContext } from 'react-router-dom';
+import { filterPosts } from "../utils/searchFilter"
 
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 const mockPublicFeed = [
@@ -9,7 +11,7 @@ const mockPublicFeed = [
         photo_id: 1,
         photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
         prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        hashtags: "#cats #yes #legs",
+        hashtags: "#cats #no #legs",
         created_by: "bob",
         date_created: "2024",
     },
@@ -18,9 +20,41 @@ const mockPublicFeed = [
         photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
         prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         hashtags: "#cats #yes #legs",
-        created_by: "bob",
+        created_by: "lucy",
         date_created: "2024",
-    }
+    },
+    {
+        photo_id: 3,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
+    {
+        photo_id: 4,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
+    {
+        photo_id: 5,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
+    {
+        photo_id: 6,
+        photo_location: "https://thebutlercollegian.com/wp-content/uploads/2019/11/Short-people.jpg",
+        prompt: "NO ACCESS TO BACKEND. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        hashtags: "#cats #yes #legs",
+        created_by: "lucy",
+        date_created: "2024",
+    },
 ];
 
 const mockPrivateFeed = [
@@ -44,6 +78,8 @@ const mockPrivateFeed = [
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 
 function Home() {
+
+
     // used to navigate between pages
     const navigate = useNavigate();
 
@@ -56,7 +92,14 @@ function Home() {
     // posts to be displayed in the feed
     const [posts, setPosts] = useState([]);
 
+    // posts to be displayed after filtering
+    const [displayedPosts, setDisplayedPosts] = useState([]);
+
+    // used for pagination
+    const [visibleCount, setVisibleCount] = useState(3);
+
     // will replace with current user's username
+
     const myUsername = "neo01";
 
     // handle switch from public and private feed
@@ -115,18 +158,37 @@ function Home() {
                 }
             } catch (err) {
                 setPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
+
+                setDisplayedPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
+
+                setVisibleCount(3);
             }
         }
 
         fetchPosts();
     }, [feedType]);
-    
+
     // popup timer which only activates once per page access
     useEffect(() => {
         setTimeout(() => {
             setTimedPopup(true);
         }, 5000);
     }, []);
+    // move to search
+    /*useEffect(() => {
+        // filter posts based on search query
+        const filtered = filterPosts(posts, searchQuery);
+        setDisplayedPosts(filtered);
+    }, [searchQuery, posts]);*/
+
+    // Handler for loading more posts
+    const handleLoadMore = () => {
+        setVisibleCount(prev => prev + 3);
+    };
+
+    // Only show up to visibleCount posts
+    const visiblePosts = displayedPosts.slice(0, visibleCount);
+
 
     return (
         <div className="bg-zinc-900 min-h-screen"> {/* bg-zinc-900*/}
@@ -134,7 +196,7 @@ function Home() {
                 <h3>Hey {myUsername}!</h3>
                 <p>Make sure to generate your daily post! Your current streak is: </p>
             </DailyPopup>
-            <Navbar myUsername={myUsername}/>
+            <Navbar myUsername={myUsername} />
             <div className="pt-20 h-full flex overflow-auto bg-zinc-900">
                 <div className="text-zinc-100 justify-center">
                     {/* toggle public and private feeds */}
@@ -143,7 +205,7 @@ function Home() {
                             <button
                                 className={`
                                 px-3 py-2
-                                ${feedType === "Public" ? "text-zinc-100" : "text-zinc-500" }
+                                ${feedType === "Public" ? "text-zinc-100" : "text-zinc-500"}
                                 `}
                                 onClick={() => handleFeedSwitch("Public")}>
                                 Public Feed
@@ -151,7 +213,7 @@ function Home() {
                             <button
                                 className={`
                                 px-3 py-2
-                                ${feedType === "Private" ? "text-zinc-100" : "text-zinc-500" }
+                                ${feedType === "Private" ? "text-zinc-100" : "text-zinc-500"}
                                 `}
                                 onClick={() => handleFeedSwitch("Private")}>
                                 Private Feed
@@ -179,9 +241,19 @@ function Home() {
                         ))}
                     </div>
                 </div>
+
+                {/* Load More button Formatting needed
+                {visibleCount < displayedPosts.length && (
+                    <button onClick={handleLoadMore} style={{ marginTop: "1rem" }}>
+                        Load More
+                    </button>
+                )}*/}
+
             </div>
         </div>
     );
 
+    {
+    }
 }
 export default Home;
