@@ -6,7 +6,7 @@
         2. the username of the post creator
 */
 export function filterPosts(posts, searchQuery) {
-    const normalizedQuery = searchQuery.toLowerCase().trim();
+    const normalizedQuery = (searchQuery || "").toLowerCase().trim();
 
     return posts.filter(post => {
         const hashtags = post.hashtags?.toLowerCase() || "";
