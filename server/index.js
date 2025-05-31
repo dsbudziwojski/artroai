@@ -30,7 +30,7 @@ app.get('/api/users/:username/images', authenticate, getImagesForProfile)
 
 app.get('/api/users/:username/followers', authenticate, getFollowers)
 
-app.get('/api/users/:username/followers', authenticate, getFollowing)
+app.get('/api/users/:username/following', authenticate, getFollowing)
 
 app.post('api/users/:username/follow-other', authenticate, followOther)
 

@@ -229,7 +229,7 @@ export const getFollowers = async (req, res) => {
     const username = req.params.username
     try {
         await validateUser(username)
-        const followers = followersOrFollowingList(username)
+        const followers = await followersOrFollowingList(username, "followers")
         if (followers.length === 0) {
             res.status(200).json({followers: [], count: 0})
         }
@@ -244,7 +244,7 @@ export const getFollowing = async (req, res) => {
     const username = req.params.username
     try {
         await validateUser(username)
-        const following = followersOrFollowingList(username, "following")
+        const following = await followersOrFollowingList(username, "following")
         if (following.length === 0) {
             res.status(200).json({following: [], count: 0})
         }
