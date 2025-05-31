@@ -26,7 +26,7 @@ const validateUser = async (username) => {
 const followersOrFollowingList = async(username, whichList) => {
     // assumes valid username
     if (whichList === "following") {
-        const following = await prisma.followers.findMany({
+        const following = await prisma.follower.findMany({
             where: {
                 following_id: username
             }
