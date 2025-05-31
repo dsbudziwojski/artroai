@@ -2,6 +2,7 @@ import { use, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DailyPopup from '../components/DailyPopup';
 import Navbar from "../components/Navbar";
+import { getAuth, onAuthStateChanged} from "firebase/auth";
 import { useOutletContext } from 'react-router-dom';
 import { filterPosts } from "../utils/searchFilter"
 
@@ -98,9 +99,9 @@ function Home() {
     // used for pagination
     const [visibleCount, setVisibleCount] = useState(3);
 
-    // will replace with current user's username
-
-    const myUsername = "neo01";
+    const auth = getAuth();
+    const [user, setUser] = useState(null);
+    const myUsername = user;
 
     // handle switch from public and private feed
     function handleFeedSwitch(type) {
@@ -174,6 +175,14 @@ function Home() {
             setTimedPopup(true);
         }, 5000);
     }, []);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser?.email.split('@')[0])
+        });
+        return () => unsubscribe(); // clean up listener
+      }, []);
+
     // move to search
     /*useEffect(() => {
         // filter posts based on search query
