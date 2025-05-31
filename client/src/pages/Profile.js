@@ -8,11 +8,13 @@ function Profile() {
     const [userData, setUserData] = useState(false);
     const [followers, setFollowers] = useState();
     const [following, setFollowing] = useState();
-    const [posts, setPosts] = useState();
+    const [posts, setPosts] = useState([]);
     const [followersPopup, setfollowersPopup] = useState(false)
     const [followingPopup, setfollowingPopup] = useState(false)
+    const [imagePopup, setImagePopup] = useState(false)
+    const [selectedImage, setSelectedImage] = useState(null)
     useEffect(() => {
-        fetch(`/api/test/users/${username}`)
+        fetch(`/api/users/${username}`)
             .then(resp => resp.json())
             .then(data => {
                 setUserData(data.profile);
@@ -31,13 +33,14 @@ function Profile() {
                 setFollowing(data);
                 console.log(following);
             })
-        fetch(`/api/test/users/${username}/image`)
+        */
+        fetch(`/api/users/${username}/images`)
             .then(resp => resp.json())
             .then(data => {
-                setPosts(data);
+                setPosts(data.images);
                 console.log(posts);
             })
-        */
+        
     }, [username]);
 
     return (
@@ -46,11 +49,14 @@ function Profile() {
             {userData ? (
                 <div>
                     <div>
-                        <h1>This is {userData.first_name} {userData.last_name}'s profile</h1>
+                        <h1>{userData.first_name} {userData.last_name}'s profile</h1>
                         <h2>@{userData.username}</h2>
                         <p>Joined: {userData.date_created}</p>
                         <p>Admin: {userData.isadmin ? "Yes" : "No"}</p>
                         <p>Bio: {userData.bio}</p>
+                    </div>
+                    <div>
+                        <button>Follow</button>
                     </div>
                     <div>
                         <button onClick={() => setfollowersPopup(true)}>Followers</button>
@@ -65,8 +71,25 @@ function Profile() {
                             <p>{following}</p>
                         </FollowerPopup>
                     </div>
-                    <div>
-                        <h3>Posts: {posts}</h3>
+                    <h3>Gallery: </h3>
+                    <div className='flex justify-center m-10'>
+                        {posts.map((img) => (
+                            <div key={img.image_id} className='rounded-md p-4 w-124'>
+                                <img src={img.path} alt={img.prompt} onClick={() => {
+                                    setImagePopup(true);
+                                    setSelectedImage(img);
+                                }}>
+                                </img>
+                                {selectedImage?.image_id === img.image_id && (
+                                    <FollowerPopup trigger={imagePopup} setTrigger={setImagePopup}>
+                                        <p>Prompts: {img.prompt}</p>
+                                        <p>Hashtags: {img.hashtags}</p>
+                                        <p>Date Created: {img.date_created}</p>
+                                    </FollowerPopup>
+                                )}
+                            </div>
+                        ))}
+                        
                     </div>
                 </div>
             ) : (

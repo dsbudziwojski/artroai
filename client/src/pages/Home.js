@@ -57,7 +57,7 @@ function Home() {
     const [posts, setPosts] = useState([]);
 
     // will replace with current user's username
-    const myUsername = "oh-a-cai";
+    const myUsername = "neo01";
 
     // handle switch from public and private feed
     function handleFeedSwitch(type) {
