@@ -369,12 +369,20 @@ export const getPublicImages = async (req, res) => {
 }
 
 export const getFollowingImages = async (req, res) => {
-    const username = req.username
+    const username = req.params.username
     try {
         await validateUser(username)
-        const followingImages = await prisma.images.findMany({
+        const following = await followersOrFollowingList(username, "followers")
+        if (!following || following.length === 0) {
+            return res.status(200).json({ images: [] });
+        }
+        const followingUsernames = following.map(record => record.following_id);
+        const followingImages = await prisma.image.findMany({
             where: {
-                following_id: username
+                created_by: { in: followingUsernames }
+            },
+            orderBy: {
+                date_created: 'desc'
             }
         })
         res.status(200).json({images: followingImages})
