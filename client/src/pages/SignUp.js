@@ -1,12 +1,55 @@
 import {useState} from "react";
 import { NavLink, useNavigate } from 'react-router-dom';
 import logo from '../artroai.png';
+import {auth} from '../firebase';
+import { createUserWithEmailAndPassword, updateProfile }    from "firebase/auth";   
 
 function SignUp() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [firstName, setFirstName]=useState("");
+    const [lastName, setLastName]= useState("");
+    const [bio, setBio]= useState("");
+    const [username, setUsername]=useState("");
+
     const navigate = useNavigate();
+
+    const handleSignUp = async () => {
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const firebaseUser = userCredential.user;
+
+            await updateProfile(firebaseUser, {
+                displayName: name,
+            });
+
+            const response = await fetch("/api/users", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+
+                },
+
+                body: JSON.stringify({
+                    username,
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: firebaseUser.email,
+                    bio,
+                    isadmin:false
+                }),
+            });
+
+            if (!response.ok) throw new Error("Failed create user profile");
+            navigate("/home");
+
+        } catch (error){
+            console.error("Sign-up error:", error.message);
+            alert("Sign-up failed: "+ error.message);
+        }
+    };
+    
     return (
         <div className="bg-zinc-900 h-screen flex justify-center items-center">
             <div className="bg-zinc-800 p-10 rounded-lg text-center flex flex-col gap-2 w-96">
@@ -15,7 +58,7 @@ function SignUp() {
                 <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="text" placeholder="Name" onChange={(e) => {setName(e.target.value)}} required/>
                 <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="email" placeholder="Email" onChange={(e) => {setEmail(e.target.value)}} required/>
                 <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}} required/>
-                <button className="bg-violet-500 text-sm text-zinc-100 p-1.5 w-full rounded" onClick={() => navigate("/home")}>Sign Up</button>
+                <button className="bg-violet-500 text-sm text-zinc-100 p-1.5 w-full rounded" onClick={handleSignUp}>Sign Up</button>
                 <NavLink to={"/"} className="text-violet-400 text-sm mt-4"><button>Switch to Login →</button></NavLink>
             </div>
         </div>
