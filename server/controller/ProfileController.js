@@ -81,6 +81,46 @@ export const getProfile = async (req, res) => {
     }
 }
 
+export const editProfile = async (req, res) => {
+    const username = req.params.username
+    const { first_name, last_name, bio } = req.body
+    try {
+        if (first_name === null && last_name === null && bio === null) {
+            throw new Error("No changes were provided")
+        }
+        await validateUser(username)
+        const old_profile = await prisma.user_profile.findUnique({
+            where: {username: req.params.username}
+        })
+        if (old_profile === null) {
+            throw new Error("No profile exists")
+        }
+        let new_data = {
+            first_name:  old_profile.first_name,
+            last_name: old_profile.last_name,
+            bio: old_profile.bio
+        }
+        if (first_name != null){
+            new_data.first_name = first_name
+        }
+        if (last_name != null) {
+            new_data.last_name = last_name
+        }
+        if (bio != null) {
+            new_data.bio = bio
+        }
+        const profile = await prisma.user_profile.update({
+            where: {
+                username
+            },
+            data: new_data
+        })
+        res.status(200).json({profile: profile})
+    } catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
 //decode image rep as b_64 json write to generated_images directory and return full file path
 function saveBase64Im(base64Im, directory){
     const buffer= Buffer.from(base64Im, 'base64');
