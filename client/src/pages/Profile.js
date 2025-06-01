@@ -25,7 +25,6 @@ function Profile() {
                 return;
             }
             const idToken =  await getIdToken(auth.currentUser, false)
-            console.log(idToken)
             const headers = {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${idToken}`

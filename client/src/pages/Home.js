@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar";
 import { useAuth } from '../AuthContext';
 import { useOutletContext } from 'react-router-dom';
 import { filterPosts } from "../utils/searchFilter"
+import {auth} from "../firebase";
+import {getIdToken} from "firebase/auth";
 
 /* \/\/\/\/\/\/\/\/\/\/\/\/\/\*MOCK DATA  as fallback \/\/\/\/\/\/\/\/\/\/\/\/\/\**/
 const mockPublicFeed = [
@@ -134,26 +136,30 @@ function Home() {
 
                     setPosts(mergedPublicPosts);
                 } else if (feedType === "Private") {
+                    if (!auth.currentUser) {
+                        return;
+                    }
+                    const idToken =  await getIdToken(auth.currentUser, false)
+                    const headers = {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${idToken}`
+                    }
 
-                    // get list of followed users
-                    const followingRes = await fetch(`/api/users/${myUsername}/following`);
-                    if (!followingRes.ok) throw new Error("failed fetch for following list");
+                    console.log(`/api/users/${myUsername}/followingImages`)
+                    let photos = []
+                    await fetch(`/api/users/${myUsername}/followingImages`,{method: 'GET', headers: headers})
+                        .then(resp => resp.json())
+                        .then(data => {
+                            setPosts(data.images);
+                            setDisplayedPosts(data.images);
+                            setVisibleCount(3);
+                        })
+                        .catch((err) => {
+                            setPosts(mockPrivateFeed);
+                            setDisplayedPosts(mockPrivateFeed);
+                            setVisibleCount(3);
+                        });
 
-                    // array of usernames
-                    const followingList = await followingRes.json();
-
-                    // fetch posts from each followed user
-                    const postsByFollowedUsers = await Promise.all(
-                        followingList.map(username =>
-                            fetch(`/api/users/${username}/image`).then(res => res.json())
-                        )
-                    );
-                    // merge and sort posts by newest
-                    const mergedPosts = postsByFollowedUsers.flat().sort((a, b) =>
-                        new Date(b.date_created) - new Date(a.date_created)
-                    );
-
-                    setPosts(mergedPosts);
                 }
             } catch (err) {
                 setPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
@@ -164,7 +170,7 @@ function Home() {
             }
         }
 
-        fetchPosts();
+        void fetchPosts();
     }, [feedType]);
 
     // popup timer which only activates once per page access
@@ -229,8 +235,8 @@ function Home() {
                                 key={post.photo_id}
                             >
                                 <img
-                                    className="w-full p-10"
-                                    src={post.photo_location}
+                                    className="w-full h-auto p-10"
+                                    src={post.path}
                                     alt="post_img"
                                 />
                                 <p><strong>Prompt:</strong> {post.prompt}</p>
