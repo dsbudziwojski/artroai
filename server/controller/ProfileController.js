@@ -243,27 +243,7 @@ export const getImagesForProfile = async (req, res) => {
     }
 }
 
-export const getPublicImages = async (req, res) => {
-    try {
-        const publicImages = await prisma.images.findMany(
 
-         )
-    }
-    catch (error) {
-        res.status(404).json({errorMsg: error.message})
-    }
-}
-
-export const getFollowingImages = async (req, res) => {
-    try {
-        const followingImages = await prisma.images.findMany({
-
-            })
-    }
-    catch (error) {
-        res.status(404).json({errorMsg: error.message})
-    }
-}
 
 export const getFollowers = async (req, res) => {
     const username = req.params.username
@@ -336,5 +316,58 @@ export const unfollowOther = async (req, res) => {
         res.status(200).json({following: following, count: following.length})
     } catch (error) {
         res.status(400).json({errorMsg: error.message})
+    }
+}
+
+export const userOrImageSearch = async (req, res) => {
+    const username = req.username
+    const {text} = req.body
+    if (text === null || typeof(text) === "string" || text.trim() === "" ) {
+        throw new Error("Required input was not valid")
+    }
+    try {
+        const images = await prisma.images.findMany({
+            where: {
+                OR: [
+                    {created_by: {contains: text, mode: "insensitive"}},
+                    {tags: {contains: text, mode: "insensitive"}}
+                ]
+            }
+        })
+        const users = await prisma.user_profile.findMany({
+            where: {
+                OR: [
+                    {username: {contains: text, mode: "insensitive"}},
+                    {first_name: {contains: text, mode: "insensitive"}},
+                    {last_name: {contains: text, mode: "insensitive"}},
+                ]
+            }
+        })
+        res.status(200).json({images: images, users: users})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+export const getPublicImages = async (req, res) => {
+    try {
+        const publicImages = await prisma.images.findMany(
+
+        )
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+export const getFollowingImages = async (req, res) => {
+    try {
+        const followingImages = await prisma.images.findMany({
+
+        })
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
     }
 }
