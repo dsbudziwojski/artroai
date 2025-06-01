@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import FollowerPopup from '../components/FollowerPopup';
 import Navbar from "../components/Navbar";
+import { getIdToken } from "firebase/auth";
+import {auth} from "../firebase";
 
 function Profile() {
     const { username } = useParams();
@@ -15,33 +17,45 @@ function Profile() {
     const [imagePopup, setImagePopup] = useState(false)
     const [selectedImage, setSelectedImage] = useState(null)
     const navigate = useNavigate();
+
+
     useEffect(() => {
-        fetch(`/api/users/${username}`)
-            .then(resp => resp.json())
-            .then(data => {
-                setUserData(data.profile);
-                console.log(userData);
-            })
-        fetch(`/api/users/${username}/followers`)
-            .then(resp => resp.json())
-            .then(data => {
-                setFollowers(data.followers);
-                console.log(followers);
-            })
-        fetch(`/api/users/${username}/following`)
-            .then(resp => resp.json())
-            .then(data => {
-                setFollowing(data.following);
-                console.log(following);
-            })
-        fetch(`/api/users/${username}/images`)
-            .then(resp => resp.json())
-            .then(data => {
-                setPosts(data.images);
-                console.log(posts);
-            })
-        
-    }, [username]);
+        async function getData(){
+            if (!auth.currentUser) {
+                return;
+            }
+            const idToken =  await getIdToken(auth.currentUser, false)
+            console.log(idToken)
+            const headers = {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${idToken}`
+            }
+
+            await fetch(`/api/users/${username}`,{method: 'GET', headers: headers})
+                .then(resp => resp.json())
+                .then(data => {
+                    setUserData(data.profile);
+                })
+            await fetch(`/api/users/${username}/followers`, {method: 'GET', headers: headers})
+                .then(resp => resp.json())
+                .then(data => {
+                    setFollowers(data.followers);
+                })
+            await fetch(`/api/users/${username}/following`, {method: 'GET', headers: headers})
+                .then(resp => resp.json())
+                .then(data => {
+                    setFollowing(data.following);
+                })
+            await fetch(`/api/users/${username}/images`, {method: 'GET', headers: headers})
+                .then(resp => resp.json())
+                .then(data => {
+                    setPosts(data.images);
+                })
+        }
+
+
+        void getData()
+    }, [username, auth.currentUser]);
 
     return (
         <div>

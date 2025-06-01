@@ -60,9 +60,9 @@ export function AuthProvider({ children }) {
     };
 
     return(
-        <AuthContext value={user}>
+        <AuthContext.Provider value={user}>
             {!loading && children}
-        </AuthContext>
+        </AuthContext.Provider>
     )
 }
 
