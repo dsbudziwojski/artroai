@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
+import { signOut } from 'firebase/auth';
+import {auth} from '../firebase'
 
 function GeneralButton({label, route}){
     const navigate = useNavigate();
@@ -16,10 +18,18 @@ function GeneralButton({label, route}){
 function SignOutButton() {
     // similar but RED!!
     const navigate = useNavigate();
+    const handleSignOut = async () => {
+        try {
+            await signOut(auth);
+            navigate('/');
+        } catch (error){
+            console.error('Invalid sign out: ', error);
+        }
+    };
     return(
         <button
             className="px-3 py-2 rounded-md hover:bg-red-500 transition"
-            onClick={() => navigate("/")}
+            onClick={handleSignOut}
         >
             Sign Out
         </button>
