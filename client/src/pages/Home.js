@@ -98,8 +98,6 @@ function Home() {
     // posts to be displayed after filtering
     const [displayedPosts, setDisplayedPosts] = useState([]);
 
-    // used for pagination
-    const [visibleCount, setVisibleCount] = useState(3);
 
     const myUsername = useAuth();
 
@@ -115,26 +113,26 @@ function Home() {
             try {
 
                 if (feedType === "Public") {
+                    if (!auth.currentUser) {
+                        return;
+                    }
+                    const idToken =  await getIdToken(auth.currentUser, false)
+                    const headers = {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${idToken}`
+                    }
+                    await fetch(`/api/users/${myUsername}/publicImages`,{method: 'GET', headers: headers})
+                        .then(resp => resp.json())
+                        .then(data => {
+                            setPosts(data.images);
+                            setDisplayedPosts(data.images);
+                        })
+                        .catch((err) => {
+                            setPosts(mockPublicFeed);
+                            setDisplayedPosts(mockPublicFeed);
+                        });
 
-                    //  get users
-                    const usersRes = await fetch("/api/users");
-                    if (!usersRes.ok) throw new Error("failed to fetch users");
-                    const users = await usersRes.json(); // [{ user_id: "u1" }, ...]
-                    const userIds = users.map(user => user.user_id);
 
-                    // Step 2: fetch all users posts into 2d array
-                    const allPostsByUser = await Promise.all(
-                        userIds.map(userId =>
-                            fetch(`/api/users/${userId}/image`).then(res => res.json())
-                        )
-                    );
-
-                    //merge and sort all posts by date
-                    const mergedPublicPosts = allPostsByUser.flat().sort((a, b) =>
-                        new Date(b.date_created) - new Date(a.date_created)
-                    );
-
-                    setPosts(mergedPublicPosts);
                 } else if (feedType === "Private") {
                     if (!auth.currentUser) {
                         return;
@@ -144,20 +142,15 @@ function Home() {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${idToken}`
                     }
-
-                    console.log(`/api/users/${myUsername}/followingImages`)
-                    let photos = []
                     await fetch(`/api/users/${myUsername}/followingImages`,{method: 'GET', headers: headers})
                         .then(resp => resp.json())
                         .then(data => {
                             setPosts(data.images);
                             setDisplayedPosts(data.images);
-                            setVisibleCount(3);
                         })
                         .catch((err) => {
                             setPosts(mockPrivateFeed);
                             setDisplayedPosts(mockPrivateFeed);
-                            setVisibleCount(3);
                         });
 
                 }
@@ -166,7 +159,6 @@ function Home() {
 
                 setDisplayedPosts(feedType === "Public" ? mockPublicFeed : mockPrivateFeed);
 
-                setVisibleCount(3);
             }
         }
 
@@ -188,12 +180,9 @@ function Home() {
     }, [searchQuery, posts]);*/
 
     // Handler for loading more posts
-    const handleLoadMore = () => {
-        setVisibleCount(prev => prev + 3);
-    };
 
     // Only show up to visibleCount posts
-    const visiblePosts = displayedPosts.slice(0, visibleCount);
+    //const visiblePosts = displayedPosts
 
 
     return (
