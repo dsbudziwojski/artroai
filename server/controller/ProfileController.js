@@ -6,6 +6,7 @@ dotenv.config();
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from "url";
+import express from "express";
 
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
@@ -276,43 +277,49 @@ export const getFollowing = async (req, res) => {
 }
 
 export const followOther = async (req, res) => {
-    const username = req.params.username
+    const user_id = req.params.username
     const { following_id } = req.body
     try {
-        if (username === "" || following_id === "") {
+        if (user_id === "" || following_id === "") {
             throw new Error("required input was not valid")
         }
-        await validateUser(username)
+        await validateUser(user_id)
         await validateUser(following_id)
+        const following = await followersOrFollowingList(user_id, "following")
+        const a = following.some(f => f.following_id === following_id);
+        if (a) {
+            throw new Error("Already following");
+        }
+
         await prisma.follower.create({
             data: {
-                user_id: username,
+                user_id: user_id,
                 following_id: following_id
             },
         })
-        const following = await followersOrFollowingList(username)
-        res.status(200).json({following: following, count: following.length})
+        const updated = await followersOrFollowingList(user_id, "following")
+        res.status(200).json({following: updated, count: updated.length})
     } catch (error) {
         res.status(400).json({errorMsg: error.message})
     }
 }
 
 export const unfollowOther = async (req, res) => {
-    const username = req.params.username
-    const { following_id } = req.body
+    const user_id = req.params.username
+    const {following_id} = req.body
     try {
-        if (username === "" || following_id === "") {
+        if (user_id === "" || following_id === "") {
             throw new Error("required input was not valid")
         }
-        await validateUser(username)
+        await validateUser(user_id)
         await validateUser(following_id)
-        await prisma.follower.delete({
+        await prisma.follower.deleteMany({
             where:{
-                user_id: username,
+                user_id: user_id,
                 following_id: following_id
             }
         })
-        const following= await followersOrFollowingList(username)
+        const following= await followersOrFollowingList(user_id, "followers")
         res.status(200).json({following: following, count: following.length})
     } catch (error) {
         res.status(400).json({errorMsg: error.message})
@@ -362,10 +369,15 @@ export const getPublicImages = async (req, res) => {
 }
 
 export const getFollowingImages = async (req, res) => {
+    const username = req.username
     try {
+        await validateUser(username)
         const followingImages = await prisma.images.findMany({
-
+            where: {
+                following_id: username
+            }
         })
+        res.status(200).json({images: followingImages})
     }
     catch (error) {
         res.status(404).json({errorMsg: error.message})
