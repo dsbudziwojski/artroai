@@ -1,18 +1,20 @@
 import {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import FollowerPopup from '../components/FollowerPopup';
 import Navbar from "../components/Navbar";
 
 function Profile() {
     const { username } = useParams();
     const [userData, setUserData] = useState(false);
-    const [followers, setFollowers] = useState();
-    const [following, setFollowing] = useState();
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
     const [posts, setPosts] = useState([]);
     const [followersPopup, setfollowersPopup] = useState(false)
     const [followingPopup, setfollowingPopup] = useState(false)
     const [imagePopup, setImagePopup] = useState(false)
     const [selectedImage, setSelectedImage] = useState(null)
+    const navigate = useNavigate();
     useEffect(() => {
         fetch(`/api/users/${username}`)
             .then(resp => resp.json())
@@ -20,20 +22,18 @@ function Profile() {
                 setUserData(data.profile);
                 console.log(userData);
             })
-        /* COMMENT OUT WHEN DUMMY DATA IS READY
-        fetch(`/api/test/users/${username}/follower`)
+        fetch(`/api/users/${username}/followers`)
             .then(resp => resp.json())
             .then(data => {
-                setFollowers(data);
+                setFollowers(data.followers);
                 console.log(followers);
             })
-        fetch(`/api/test/users/${username}/following`)
+        fetch(`/api/users/${username}/following`)
             .then(resp => resp.json())
             .then(data => {
-                setFollowing(data);
+                setFollowing(data.following);
                 console.log(following);
             })
-        */
         fetch(`/api/users/${username}/images`)
             .then(resp => resp.json())
             .then(data => {
@@ -45,7 +45,7 @@ function Profile() {
 
     return (
         <div>
-            <Navbar myUsername={username}></Navbar>
+            <Navbar/>
             {userData ? (
                 <div>
                     <div>
@@ -57,18 +57,32 @@ function Profile() {
                     </div>
                     <div>
                         <button>Follow</button>
+                        <br></br>
+                        <button onClick={() => navigate(`/profile/edit/${username}`)}>Edit Profile</button>
                     </div>
                     <div>
                         <button onClick={() => setfollowersPopup(true)}>Followers</button>
                         <FollowerPopup trigger={followersPopup} setTrigger={setfollowersPopup}>
                             <h4>Profiles that follow @{username}: </h4>
-                            <p>{followers}</p>
+                            <ul>
+                                {followers.map((follower) => (
+                                    <a href="">
+                                        <li key={follower.following_id} onClick={() => navigate(`/profile/${follower.following_id}`)}>@{follower.following_id}</li>
+                                    </a>
+                                ))}
+                            </ul>
                         </FollowerPopup>
                         <br></br>
                         <button onClick={() => setfollowingPopup(true)}>Following</button>
                         <FollowerPopup trigger={followingPopup} setTrigger={setfollowingPopup}>
                             <h4>Profiles that @{username} follows: </h4>
-                            <p>{following}</p>
+                            <ul>
+                                {following.map((follow) => (
+                                    <a href="">
+                                        <li key={follow.user_id} onClick={() => navigate(`/profile/${follow.user_id}`)}>@{follow.user_id}</li>
+                                    </a>
+                                ))}
+                            </ul>
                         </FollowerPopup>
                     </div>
                     <h3>Gallery: </h3>
@@ -89,7 +103,6 @@ function Profile() {
                                 )}
                             </div>
                         ))}
-                        
                     </div>
                 </div>
             ) : (

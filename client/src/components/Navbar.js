@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-
+import { useAuth } from '../AuthContext';
 
 function GeneralButton({label, route}){
     const navigate = useNavigate();
@@ -26,8 +26,7 @@ function SignOutButton() {
     )
 }
 
-export default function Navbar({myUsername}) {
-
+export default function Navbar() {
     return(
         <div className="fixed top-0 left-0 right-0 z-50">
             <nav className="bg-violet-500 text-lg text-zinc-100 shadow-md">
@@ -40,7 +39,7 @@ export default function Navbar({myUsername}) {
                         />
                     </div>
                     <div className="flex-1 justify-center mx-3 space-x-4">
-                        <GeneralButton label="My Account" route={`/profile/${myUsername}`}/>
+                        <GeneralButton label="My Account" route={`/profile/${useAuth()}`}/>
                         <GeneralButton label="Home" route="/home"/>
                         <GeneralButton label="Search" route="/search"/>
                     </div>

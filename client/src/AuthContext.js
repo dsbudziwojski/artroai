@@ -27,12 +27,12 @@ export function AuthProvider({ children }) {
     }, []);
     */
    useEffect(() => {
-           const unsubscribe = onAuthStateChanged(auth, (user) => {
-               setUser(user?.email.split('@')[0]);
-               setLoading(false);
-           });
-           return () => unsubscribe();
-         }, []);
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user?.email.split('@')[0]);
+            setLoading(false);
+        });
+        return () => unsubscribe();
+    }, []);
 
     function signInGoogle() {
         const gProvider = new GoogleAuthProvider()
