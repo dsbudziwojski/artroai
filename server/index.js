@@ -14,7 +14,8 @@ import {
   unfollowOther,
   editProfile,
   userOrImageSearch,
-  getFollowingImages
+  getFollowingImages,
+  getPublicImages
 } from "./controller/ProfileController.js";
 
 const app = express()
@@ -46,6 +47,8 @@ app.post('/api/users/:username/unfollow-other', authenticate, unfollowOther)
 app.get('/api/users/:username/usersOrImages', authenticate, userOrImageSearch)
 
 app.get('/api/users/:username/followingImages', authenticate, getFollowingImages)
+
+app.get('/api/users/:username/publicImages', authenticate, getPublicImages)
 
 //def post route for imag gen
 app.post('/api/generate-image', authenticate, generateImage)

@@ -358,10 +358,15 @@ export const userOrImageSearch = async (req, res) => {
 }
 
 export const getPublicImages = async (req, res) => {
+    const username = req.params.username
     try {
-        const publicImages = await prisma.images.findMany(
-
-        )
+        await validateUser(username)
+        const images = await prisma.image.findMany({
+            orderBy: {
+                date_created: 'desc'
+            }
+        })
+        res.status(200).json({images: images})
     }
     catch (error) {
         res.status(404).json({errorMsg: error.message})
