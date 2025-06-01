@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import SignUp from "./pages/SignUp";
 import Search from "./pages/Search";
 import { AuthProvider } from "./AuthContext";
+import EditProfile from "./pages/EditProfile";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/home" element={<Home />} />
           <Route path="/profile/:username" element={<Profile />} />
+          <Route path="/profile/edit/:username" element={<EditProfile />} />
           <Route path="/lostpassword" element={<LostPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes >

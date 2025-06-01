@@ -1,24 +1,26 @@
 import {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import FollowerPopup from '../components/FollowerPopup';
+import ImagePopup from '../components/ImagePopup';
 import Navbar from "../components/Navbar";
 import { getIdToken } from "firebase/auth";
 import {auth} from "../firebase";
 
 function Profile() {
     const { username } = useParams();
+    const currentUser = useAuth();
     const [userData, setUserData] = useState(false);
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
     const [posts, setPosts] = useState([]);
-    const [followersPopup, setfollowersPopup] = useState(false)
-    const [followingPopup, setfollowingPopup] = useState(false)
-    const [imagePopup, setImagePopup] = useState(false)
-    const [selectedImage, setSelectedImage] = useState(null)
-    const navigate = useNavigate();
-
-
+    const [followersPopup, setfollowersPopup] = useState(false);
+    const [followingPopup, setfollowingPopup] = useState(false);
+    const [imagePopup, setImagePopup] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [isFollowing, setIsFollowing] = useState(null);
+    const navigate = useNavigate(); 
     useEffect(() => {
         async function getData(){
             if (!auth.currentUser) {
@@ -51,10 +53,61 @@ function Profile() {
                     setPosts(data.images);
                 })
         }
-
-
         void getData()
-    }, [username, auth.currentUser]);
+    }, [username]);
+
+    useEffect(() => {
+        if (following.length > 0 && currentUser) {
+            setIsFollowing(following.some(follower => follower.user_id === currentUser));
+        }
+    }, [following, currentUser]);
+
+    const handleFollow = async () => {
+        if (!auth.currentUser) {
+            return;
+        }
+        const idToken =  await getIdToken(auth.currentUser, false)
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${idToken}`
+        }
+        const response = await fetch(`/api/users/${currentUser}/follow-other`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                following_id: username,
+            }),
+        });
+    
+        if (response.ok) {
+            setIsFollowing(true);
+            setFollowing(prev => [...prev, { user_id: currentUser, following_id: username }]);
+        }
+        console.log("Follow clicked. currentUser:", currentUser, "following_id (username):", username);
+    }
+
+    const handleUnfollow = async () => {
+        if (!auth.currentUser) {
+            return;
+        }
+        const idToken =  await getIdToken(auth.currentUser, false)
+        const headers = {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${idToken}`
+        }
+        const response = await fetch(`/api/users/${currentUser}/unfollow-other`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({
+                following_id: username,
+            }),
+        });
+    
+        if (response.ok) {
+            setIsFollowing(false);
+            setFollowers(prev => prev.filter(f => f.following_id !== username));
+        }
+    }
 
     return (
         <div>
@@ -69,18 +122,31 @@ function Profile() {
                         <p>Bio: {userData.bio}</p>
                     </div>
                     <div>
-                        <button>Follow</button>
-                        <br></br>
-                        <button onClick={() => navigate(`/profile/edit/${username}`)}>Edit Profile</button>
+                        {currentUser === username ? (
+                            <button onClick={() => navigate(`/profile/edit/${username}`)}>Edit Profile</button>
+                        ) : isFollowing ? (
+                            <a href="">
+                                <button onClick={handleUnfollow}>Unfollow</button>
+                            </a>
+                        ) : (
+                            <a href="">
+                                <button onClick={handleFollow}>Follow</button>
+                            </a>
+                        )}
                     </div>
                     <div>
                         <button onClick={() => setfollowersPopup(true)}>Followers</button>
                         <FollowerPopup trigger={followersPopup} setTrigger={setfollowersPopup}>
                             <h4>Profiles that follow @{username}: </h4>
                             <ul>
-                                {followers.map((follower) => (
+                                {following.map((follower) => (
                                     <a href="">
-                                        <li key={follower.following_id} onClick={() => navigate(`/profile/${follower.following_id}`)}>@{follower.following_id}</li>
+                                        <li key={follower.user_id} onClick={() => {
+                                            navigate(`/profile/${follower.user_id}`)
+                                            setfollowersPopup(false)
+                                            }}>
+                                                @{follower.user_id}
+                                        </li>
                                     </a>
                                 ))}
                             </ul>
@@ -90,9 +156,14 @@ function Profile() {
                         <FollowerPopup trigger={followingPopup} setTrigger={setfollowingPopup}>
                             <h4>Profiles that @{username} follows: </h4>
                             <ul>
-                                {following.map((follow) => (
+                                {followers.map((follow) => (
                                     <a href="">
-                                        <li key={follow.user_id} onClick={() => navigate(`/profile/${follow.user_id}`)}>@{follow.user_id}</li>
+                                        <li key={follow.following_id} onClick={() => {
+                                            navigate(`/profile/${follow.following_id}`)
+                                            setfollowingPopup(false)
+                                            }}>
+                                                @{follow.following_id}
+                                        </li>
                                     </a>
                                 ))}
                             </ul>
@@ -108,11 +179,11 @@ function Profile() {
                                 }}>
                                 </img>
                                 {selectedImage?.image_id === img.image_id && (
-                                    <FollowerPopup trigger={imagePopup} setTrigger={setImagePopup}>
+                                    <ImagePopup trigger={imagePopup} setTrigger={setImagePopup}>
                                         <p>Prompts: {img.prompt}</p>
                                         <p>Hashtags: {img.hashtags}</p>
                                         <p>Date Created: {img.date_created}</p>
-                                    </FollowerPopup>
+                                    </ImagePopup>
                                 )}
                             </div>
                         ))}

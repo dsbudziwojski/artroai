@@ -12,13 +12,12 @@ function Login() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [user,setUser]= useState(null);
     const navigate = useNavigate();
 
     const handleLogin = async() =>{
         try{
             const userCredential = await signInWithEmailAndPassword(auth, username, password);
-            const user= userCredential.user;
+            const user = userCredential.user;
             console.log("Logged in user: ", user);
             navigate("/home");
         } catch (error) {
