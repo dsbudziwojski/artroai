@@ -1,20 +1,4 @@
-import Navbar from "../components/Navbar";
-
-export default function Search() {
-    return (
-        <div className="bg-zinc-900 h-screen">
-            <Navbar />
-            <div className="bg-zinc-800 m-5 p-10 h-full rounded-md">
-                <div className="flex justify-center text-gray-100">
-                    <input className="bg-zinc-500 rounded-md w-auto " placeholder="" />
-                    <button className="rounded">
-                        Search
-                    </button>
-                </div>
-            </div>
-        </div>
-    )
-} import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { filterPosts } from "../utils/searchFilter";
 import Navbar from "../components/Navbar";
