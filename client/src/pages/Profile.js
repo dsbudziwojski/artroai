@@ -171,7 +171,7 @@ function Profile() {
                     </div>
                     <div className="flex justify-center">
                         <h3>Gallery: </h3>
-                        <div className="flex flex-wrap mx-5 my-10">
+                        <div className="flex justify-center flex-wrap mx-5 my-10">
                             {posts.map((img) => (
                                 <div key={img.image_id} className="rounded-xl ">
                                     <div className='m-5 w-96 shadow-lg cursor-pointer hover:scale-105'>
