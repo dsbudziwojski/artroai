@@ -6,6 +6,7 @@ dotenv.config();
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from "url";
+import express from "express";
 
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
@@ -77,6 +78,46 @@ export const getProfile = async (req, res) => {
         res.status(200).json({profile: profile})
     }
     catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+export const editProfile = async (req, res) => {
+    const username = req.params.username
+    const { first_name, last_name, bio } = req.body
+    try {
+        if (first_name === null && last_name === null && bio === null) {
+            throw new Error("No changes were provided")
+        }
+        await validateUser(username)
+        const old_profile = await prisma.user_profile.findUnique({
+            where: {username: req.params.username}
+        })
+        if (old_profile === null) {
+            throw new Error("No profile exists")
+        }
+        let new_data = {
+            first_name:  old_profile.first_name,
+            last_name: old_profile.last_name,
+            bio: old_profile.bio
+        }
+        if (first_name != null){
+            new_data.first_name = first_name
+        }
+        if (last_name != null) {
+            new_data.last_name = last_name
+        }
+        if (bio != null) {
+            new_data.bio = bio
+        }
+        const profile = await prisma.user_profile.update({
+            where: {
+                username
+            },
+            data: new_data
+        })
+        res.status(200).json({profile: profile})
+    } catch (error) {
         res.status(404).json({errorMsg: error.message})
     }
 }
@@ -203,27 +244,7 @@ export const getImagesForProfile = async (req, res) => {
     }
 }
 
-export const getPublicImages = async (req, res) => {
-    try {
-        const publicImages = await prisma.images.findMany(
 
-         )
-    }
-    catch (error) {
-        res.status(404).json({errorMsg: error.message})
-    }
-}
-
-export const getFollowingImages = async (req, res) => {
-    try {
-        const followingImages = await prisma.images.findMany({
-
-            })
-    }
-    catch (error) {
-        res.status(404).json({errorMsg: error.message})
-    }
-}
 
 export const getFollowers = async (req, res) => {
     const username = req.params.username
@@ -256,45 +277,122 @@ export const getFollowing = async (req, res) => {
 }
 
 export const followOther = async (req, res) => {
-    const username = req.params.username
+    const user_id = req.params.username
     const { following_id } = req.body
     try {
-        if (username === "" || following_id === "") {
+        if (user_id === "" || following_id === "") {
             throw new Error("required input was not valid")
         }
-        await validateUser(username)
+        await validateUser(user_id)
         await validateUser(following_id)
+        const following = await followersOrFollowingList(user_id, "following")
+        const a = following.some(f => f.following_id === following_id);
+        if (a) {
+            throw new Error("Already following");
+        }
+
         await prisma.follower.create({
             data: {
-                user_id: username,
+                user_id: user_id,
                 following_id: following_id
             },
         })
-        const following = await followersOrFollowingList(username)
-        res.status(200).json({following: following, count: following.length})
+        const updated = await followersOrFollowingList(user_id, "following")
+        res.status(200).json({following: updated, count: updated.length})
     } catch (error) {
         res.status(400).json({errorMsg: error.message})
     }
 }
 
 export const unfollowOther = async (req, res) => {
-    const username = req.params.username
-    const { following_id } = req.body
+    const user_id = req.params.username
+    const {following_id} = req.body
     try {
-        if (username === "" || following_id === "") {
+        if (user_id === "" || following_id === "") {
             throw new Error("required input was not valid")
         }
-        await validateUser(username)
+        await validateUser(user_id)
         await validateUser(following_id)
-        await prisma.follower.delete({
+        await prisma.follower.deleteMany({
             where:{
-                user_id: username,
+                user_id: user_id,
                 following_id: following_id
             }
         })
-        const following= await followersOrFollowingList(username)
+        const following= await followersOrFollowingList(user_id, "followers")
         res.status(200).json({following: following, count: following.length})
     } catch (error) {
         res.status(400).json({errorMsg: error.message})
+    }
+}
+
+export const userOrImageSearch = async (req, res) => {
+    const username = req.username
+    const {text} = req.body
+    if (text === null || typeof(text) === "string" || text.trim() === "" ) {
+        throw new Error("Required input was not valid")
+    }
+    try {
+        const images = await prisma.images.findMany({
+            where: {
+                OR: [
+                    {created_by: {contains: text, mode: "insensitive"}},
+                    {tags: {contains: text, mode: "insensitive"}}
+                ]
+            }
+        })
+        const users = await prisma.user_profile.findMany({
+            where: {
+                OR: [
+                    {username: {contains: text, mode: "insensitive"}},
+                    {first_name: {contains: text, mode: "insensitive"}},
+                    {last_name: {contains: text, mode: "insensitive"}},
+                ]
+            }
+        })
+        res.status(200).json({images: images, users: users})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+export const getPublicImages = async (req, res) => {
+    const username = req.params.username
+    try {
+        await validateUser(username)
+        const images = await prisma.image.findMany({
+            orderBy: {
+                date_created: 'desc'
+            }
+        })
+        res.status(200).json({images: images})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
+    }
+}
+
+export const getFollowingImages = async (req, res) => {
+    const username = req.params.username
+    try {
+        await validateUser(username)
+        const following = await followersOrFollowingList(username, "followers")
+        if (!following || following.length === 0) {
+            return res.status(200).json({ images: [] });
+        }
+        const followingUsernames = following.map(record => record.following_id);
+        const followingImages = await prisma.image.findMany({
+            where: {
+                created_by: { in: followingUsernames }
+            },
+            orderBy: {
+                date_created: 'desc'
+            }
+        })
+        res.status(200).json({images: followingImages})
+    }
+    catch (error) {
+        res.status(404).json({errorMsg: error.message})
     }
 }

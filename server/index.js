@@ -9,7 +9,13 @@ import {
   getImagesForProfile,
   generateImage,
   getFollowing,
-  getFollowers, followOther, unfollowOther
+  getFollowers,
+  followOther,
+  unfollowOther,
+  editProfile,
+  userOrImageSearch,
+  getFollowingImages,
+  getPublicImages
 } from "./controller/ProfileController.js";
 
 const app = express()
@@ -18,11 +24,13 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 app.use(express.json())
-app.use('/api/generated-images', authenticate, express.static(path.join(__dirname, 'generated_images')));
+app.use('/api/generated-images', express.static(path.join(__dirname, 'generated_images')));
 
 app.post('/api/users', authenticate, createProfile)
 
 app.get('/api/users/:username', authenticate, getProfile)
+
+app.patch('/api/users/:username', authenticate, editProfile)
 
 app.get('/api/users/:username/images/:image_id', authenticate, getUniqueImage)
 
@@ -32,9 +40,15 @@ app.get('/api/users/:username/followers', authenticate, getFollowers)
 
 app.get('/api/users/:username/following', authenticate, getFollowing)
 
-app.post('api/users/:username/follow-other', authenticate, followOther)
+app.post('/api/users/:username/follow-other', authenticate, followOther)
 
-app.post('api/users/:username/unfollow-other', authenticate, unfollowOther)
+app.post('/api/users/:username/unfollow-other', authenticate, unfollowOther)
+
+app.get('/api/users/:username/usersOrImages', authenticate, userOrImageSearch)
+
+app.get('/api/users/:username/followingImages', authenticate, getFollowingImages)
+
+app.get('/api/users/:username/publicImages', authenticate, getPublicImages)
 
 //def post route for imag gen
 app.post('/api/generate-image', authenticate, generateImage)

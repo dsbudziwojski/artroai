@@ -1,4 +1,4 @@
-import admin from "firebase-admin";
+import admin from "./firebaseAdmin.js";
 
 export default async function authenticate(req, res, next) {
     // TODO
