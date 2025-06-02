@@ -20,7 +20,10 @@ function Profile() {
     const [imagePopup, setImagePopup] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [isFollowing, setIsFollowing] = useState(null);
+    const [followerCount, setFollowerCount] = useState(null);
+    const [followingCount, setFollowingCount] = useState(null);
     const navigate = useNavigate(); 
+
     useEffect(() => {
         async function getData(){
             if (!auth.currentUser) {
@@ -41,11 +44,13 @@ function Profile() {
                 .then(resp => resp.json())
                 .then(data => {
                     setFollowers(data.followers);
+                    setFollowingCount(data.count);
                 })
             await fetch(`/api/users/${username}/following`, {method: 'GET', headers: headers})
                 .then(resp => resp.json())
                 .then(data => {
                     setFollowing(data.following);
+                    setFollowerCount(data.count);
                 })
             await fetch(`/api/users/${username}/images`, {method: 'GET', headers: headers})
                 .then(resp => resp.json())
@@ -136,6 +141,7 @@ function Profile() {
                     </div>
                     <div>
                         <button onClick={() => setfollowersPopup(true)}>Followers</button>
+                        <p>Followers: {followerCount}</p>
                         <FollowerPopup trigger={followersPopup} setTrigger={setfollowersPopup}>
                             <h4>Profiles that follow @{username}: </h4>
                             <ul>
@@ -151,8 +157,8 @@ function Profile() {
                                 ))}
                             </ul>
                         </FollowerPopup>
-                        <br></br>
                         <button onClick={() => setfollowingPopup(true)}>Following</button>
+                        <p>Following: {followingCount}</p>
                         <FollowerPopup trigger={followingPopup} setTrigger={setfollowingPopup}>
                             <h4>Profiles that @{username} follows: </h4>
                             <ul>
