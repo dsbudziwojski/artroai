@@ -8,6 +8,10 @@ import path from 'path';
 import { fileURLToPath } from "url";
 import express from "express";
 
+const openai= new OpenAI({
+    apikeKey: process.env.OpenAI_API_KEY,
+});
+
 const __filename=fileURLToPath(import.meta.url);
 const __dirname=path.dirname(__filename);
 
@@ -131,20 +135,26 @@ function saveBase64Im(base64Im, directory){
     return filepath;
 }
 export const generateImage = async (req, res) => {
+    console.log("✅ generateImage route hit");
+
     try {
         // TODO
         const { prompt, created_by } = req.body;
+        console.log("📥 Incoming request body:", req.body);
         
         if(!prompt || prompt.trim() === '') {
+            console.warn("❌ Missing prompt");
             throw new Error("Prompt required");
         }
 
         if(!created_by || prompt.trim() === '') {
+            console.warn("❌ Missing created_by");
             throw new Error("username is required");
         }
 
 
         //call api to create images
+        console.log("🔮 Sending image generation request to OpenAI...");
         const response= await openai.images.generate({
             prompt,
             n:1,
@@ -155,6 +165,7 @@ export const generateImage = async (req, res) => {
         console.log(response.data[0].b64_json) //get the output of the api for testing
 
         const base64imag= response.data[0].b64_json;
+        console.log("✅ Image received from OpenAI");
 
         const dir=path.join(__dirname,'..', 'generated_images');
 
@@ -163,6 +174,8 @@ export const generateImage = async (req, res) => {
         const fullFilePath= saveBase64Im(base64imag, dir); //call func
 
         const relFilePath=path.relative(process.cwd(), fullFilePath);
+        console.log("💾 Image saved to:", relFilePath);
+        const publicURLPath='/api/generated-images/${fileName}';
 
         //generate hashtag response
 
@@ -183,17 +196,19 @@ export const generateImage = async (req, res) => {
 
         const hashtags= hashtagResponse.choices[0].message.content.trim();
         console.log(hashtags);//check if generating hashtags occurs
+        console.log("🏷️ Hashtags generated:", hashtags);
 
         const savedImage= await prisma.image.create({
             data:{
                 prompt,
-                path: relFilePath,
+                path: publicURLPath,
                 hashtags,
                 created_by,
 
             },
 
         });
+        console.log("✅ Image metadata saved to database");
 
         res.status(200).json({image: savedImage});
 

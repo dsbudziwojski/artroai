@@ -23,6 +23,10 @@ const port = process.env.PORT || 5001
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Serve generated images statically
+app.use('/api/generated-images', express.static(path.join(__dirname, 'generated_images')));
+
+
 app.use(express.json())
 app.use('/api/generated-images', express.static(path.join(__dirname, 'generated_images')));
 
