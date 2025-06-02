@@ -211,7 +211,7 @@ function Home() {
                                 ${feedType === "Private" ? "text-zinc-100" : "text-zinc-500"}
                                 `}
                                 onClick={() => handleFeedSwitch("Private")}>
-                                Private Feed
+                                Following Feed
                             </button>
                         </nav>
                     </div>

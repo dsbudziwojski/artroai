@@ -32,7 +32,7 @@ function Login() {
                 {/*<img src={logo} alt="ArtroAI Logo" className="w-22 h-22 mx-auto mb-4" />*/}
                 <img src={logo} className="rounded-lg w-50 h-auto mx-auto mb-4" />
                 <h1 className="text-2xl text-white mb-2">Login</h1>
-                <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="text" placeholder="Username" onChange={(e) => {setUsername(e.target.value)}} required/>
+                <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="text" placeholder="Email" onChange={(e) => {setUsername(e.target.value)}} required/>
                 <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}} required/>
                 <button className="bg-violet-500 text-sm text-zinc-100 p-1.5 w-full rounded" onClick={handleLogin}>Login</button>
                 <div className="text-zinc-300 text-xs">Forgot Password? <span className="text-zinc-200 underline" onClick={() => navigate("/lostpassword")}>Click Here</span></div>
