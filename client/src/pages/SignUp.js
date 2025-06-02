@@ -8,10 +8,6 @@ function SignUp() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [firstName, setFirstName]=useState("");
-    const [lastName, setLastName]= useState("");
-    const [bio, setBio]= useState("");
-    const [username, setUsername]=useState("");
 
     const navigate = useNavigate();
 
@@ -32,11 +28,11 @@ function SignUp() {
                 },
 
                 body: JSON.stringify({
-                    username,
-                    first_name: firstName,
-                    last_name: lastName,
+                    username: "",
+                    first_name: "",
+                    last_name: "",
                     email: firebaseUser.email,
-                    bio,
+                    bio: "",
                     isadmin:false
                 }),
             });
