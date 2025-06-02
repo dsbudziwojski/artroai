@@ -1,64 +1,92 @@
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
-import { signOut } from 'firebase/auth';
-import {auth} from '../firebase'
+import React, {useState} from 'react';
+import ImagePopup from '../components/ImagePopup';
+import {useAuth} from '../AuthContext';
+import { useSearchParams } from 'react-router-dom';
 
-function GeneralButton({label, route}){
-    const navigate = useNavigate();
-    return(
-        <button
-            className="px-3 py-2"
-            onClick={() => navigate(route)}
-        >
-            {label}
-        </button>
-    )
-}
+function ImageGen() {
+    const { user } =useAuth();
+    const [prompt, setPrompt]= useState("");
+    const [imagePath, setImagePath]= useState("");
+    const [hashtags, setHashtags] = useState("");
+    const [showPopup, setShowPopup]=useState(false);
+    const [loading, setLoading]=useState(false);
 
-function SignOutButton() {
-    // similar but RED!!
-    const navigate = useNavigate();
-    const handleSignOut = async () => {
+    const genImage = async () => {
+        if (!user || (!user.displayName && !user.email)){
+            return alert("Please sign in to generate image");
+        }
+
+        setLoading(true);
+        setShowPopup(true);
+
         try {
-            await signOut(auth);
-            navigate('/');
+            const res = await fetch('/api/generate-image', {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    prompt,
+                    created_by: user.displayName || user.email
+                }),
+            });
+
+            const data = await res.json();
+            if(!res.ok || !data.image){
+                throw new Error(data.errorMsg || "Image generation failure");
+            }
+
+            console.log("Image path from backend:", data.image.path);
+            console.log("Hashtags:", data.image.hashtags);
+
+            const imageURL= `/api/generate-image/${data.image.path.split('/').pop()}`;
+            setImagePath(imageURL);
+            setHashtags(data.image.hashtags);
         } catch (error){
-            console.error('Invalid sign out: ', error);
+            alert("Failed to generate image: " + error.message);
+            setImagePath("");
+        } finally{
+            setLoading(false);
         }
     };
-    return(
-        <button
-            className="px-3 py-2 rounded-md hover:bg-red-500 transition"
-            onClick={handleSignOut}
-        >
-            Sign Out
-        </button>
-    )
-}
 
-export default function Navbar() {
     return(
-        <div className="fixed top-0 left-0 right-0 z-50">
-            <nav className="bg-violet-500 text-lg text-zinc-100 shadow-md">
-                <div className="p-2 flex items-center">
-                    <div>
+        <div className="flex flex-col items-center">
+            <input 
+                type="text"
+                placeholder="Enter a prompt"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                className="p-2 rounded bg-gray-200 text-black w-72"
+            />
+
+            <button
+                onClick={genImage}
+                className="mt-3 px-4 py-2 bg-purple-600 text-white rounded"
+            >
+                Generate image
+            </button>
+
+            <ImagePopup trigger={showPopup} setTrigger={setShowPopup}>
+                {loading ? (
+                    <p className="text-center text-gray-600">Generating image...</p>
+                ) : imagePath ? (
+                    <div className="flex flex-col items-center">
                         <img
-                            src="/artroLogo.png"
-                            alt="ArtroAI Logo"
-                            className="h-16 w-auto"
+                            src={imagePath}
+                            alt="AI-art"
+                            className="max-w-full max-h-[75vh] rounded shadow-md"
                         />
+                        <p className="text-sm text-gray-600 mt-2">{hashtags}</p>
                     </div>
-                    <div className="flex-1 justify-center mx-3 space-x-4">
-                        <GeneralButton label="My Account" route={`/profile/${useAuth()}`}/>
-                        <GeneralButton label="Home" route="/home"/>
-                        <GeneralButton label="Search" route="/search"/>
-                        <GeneralButton label="Generate Image" route="/generate/image"/>
-                    </div>
-                    <div className="mx-3">
-                        <SignOutButton/>
-                    </div>
-                </div>
-            </nav>
+                ) : (
+                    <p>Error loading image</p>
+
+                )}
+            </ImagePopup>
         </div>
-    )
+    );
 }
+export default ImageGen;
+
+
+
+
