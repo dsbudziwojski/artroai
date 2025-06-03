@@ -43,6 +43,8 @@ function Profile() {
     const [displayFirstName, setDisplayFirstName] = useState(null);
     const [displayLastName, setDisplayLastName] = useState(null);
     const [displayBio, setDisplayBio] = useState(null);
+
+    const [timer, setTimer] = useState(false);
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -240,6 +242,12 @@ function Profile() {
         }
     }, [justUnfollowed]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            setTimer(true);
+        }, 10000);
+    }, []);
+
     return (
         <div className="bg-zinc-900 min-h-screen text-zinc-300 pt-20">
             <Navbar/>
@@ -263,13 +271,13 @@ function Profile() {
                                         <div className="px-2">
                                             <button onClick={() => setFollowersPopup(true)}>Followers</button>: {displayFollowerCount}
                                             <FollowerPopup trigger={followersPopup} setTrigger={setFollowersPopup}>
-                                                <h4>Profiles that follow @{username}: </h4>
+                                                <h4 className="pb-1 text-opacity-90 text-zinc-500">Profiles that follow @{username}: </h4>
                                                 {Array.isArray(displayFollowing) ? (
                                                     <ul>
                                                         {displayFollowing.map((follower) => (
                                                             <li key={follower.user_id}>
                                                                 <a href={`/profile/${follower.user_id}`}>
-                                                                    <button onClick={() => {navigate(`/profile/${follower.user_id}`); setFollowersPopup(false)}}>
+                                                                    <button className="text-opacity-80 text-violet-500 underline underline-offset-2" onClick={() => {navigate(`/profile/${follower.user_id}`); setFollowersPopup(false)}}>
                                                                         @{follower.user_id}
                                                                     </button>
                                                                 </a>
@@ -284,13 +292,13 @@ function Profile() {
                                         <div className="px-2">
                                             <button onClick={() => setFollowingPopup(true)}>Following</button>: {displayFollowingCount}
                                             <FollowerPopup trigger={followingPopup} setTrigger={setFollowingPopup}>
-                                                <h4>Profiles that @{username} follows: </h4>
+                                                <h4 className="pb-1 text-opacity-90 text-zinc-500">Profiles that @{username} follows: </h4>
                                                 {Array.isArray(displayFollowing) ? (
                                                     <ul>
                                                         {displayFollowers.map((follow) => (
                                                             <li key={follow.following_id}>
                                                                 <a href={`/profile/${follow.following_id}`}>
-                                                                    <button onClick={() => {navigate(`/profile/${follow.following_id}`); setFollowingPopup(false)}}>
+                                                                    <button className="text-opacity-80 text-violet-500 underline underline-offset-2" onClick={() => {navigate(`/profile/${follow.following_id}`); setFollowingPopup(false)}}>
                                                                         @{follow.following_id}
                                                                     </button>
                                                                 </a>
@@ -303,12 +311,33 @@ function Profile() {
                                             </FollowerPopup>
                                         </div>
                                     </div>
-                                    <h2 className="text-zinc-500">@{userData.username}</h2>
+                                    <div className="flex space-x-4">
+                                        <h2 className="text-zinc-500">@{userData.username}</h2>
+                                        {currentUser !== username && (
+                                            <div className="ml-2">
+                                                {isFollowing ? (
+                                                    <div>
+                                                        <button className="text-zinc-500 rounded-md hover:text-zinc-50 transition" onClick={handleUnfollow}>Unfollow</button>
+                                                        <AddedFollowerPopup trigger={removedFollowersPopup} setTrigger={setRemovedFollowersPopup}>
+                                                            <p className="top-1 left-2 px-2 py-0 text-opacity-80 text-zinc-100">Added @{username}</p>
+                                                        </AddedFollowerPopup>
+                                                    </div>
+                                                ) : (
+                                                    <div>
+                                                        <button className="text-zinc-500 rounded-md hover:text-zinc-50 transition" onClick={handleFollow}>Follow</button>
+                                                        <AddedFollowerPopup trigger={addedFollowersPopup} setTrigger={setAddedFollowersPopup}>
+                                                            <p className="top-1 left-2 px-2 py-0 text-opacity-80 text-zinc-100">Removed @{username}</p>
+                                                        </AddedFollowerPopup>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                     <p><span className="font-medium text-zinc-600">Joined:</span> {userData.date_created.split('T')[0]}</p>
                                     <p><span className="font-medium text-zinc-600">Admin:</span> {userData.isadmin ? "Yes" : "No"}</p>
                                     <p><span className="font-medium text-zinc-600">Bio:</span> {bio}</p>
                                     <div>
-                                        {currentUser === username ? (
+                                        {currentUser === username && (
                                             <div>
                                                 <button
                                                     className="text-zinc-500 rounded-md hover:text-zinc-50 transition"
@@ -325,30 +354,8 @@ function Profile() {
                                                     </div>
                                                 </EditProfilePopup>
                                             </div>
-                                        ) : isFollowing ? (
-                                            <div>
-                                                <button
-                                                    className="text-zinc-500 rounded-md hover:text-zinc-50 transition"
-                                                    onClick={handleUnfollow}>Unfollow</button>
-                                                <AddedFollowerPopup trigger={removedFollowersPopup} setTrigger={setRemovedFollowersPopup}>
-                                                    <p>Added @{username}</p>
-                                                </AddedFollowerPopup>
-                                            </div>
-                                        ) : (
-                                            <div>
-                                                <button
-                                                    className="text-zinc-500 rounded-md hover:text-zinc-50 transition"
-                                                    onClick={handleFollow}>Follow</button>
-                                                <AddedFollowerPopup trigger={addedFollowersPopup} setTrigger={setAddedFollowersPopup}>
-                                                    <p>Removed @{username}</p>
-                                                </AddedFollowerPopup>
-                                            </div>
                                         )}
                                     </div>
-                                </div>
-
-                                <div>
-
                                 </div>
                             </div>
                         </div>
@@ -377,9 +384,9 @@ function Profile() {
                                                 <div className="relative">
                                                     {selectedImage?.image_id === img.image_id && (
                                                         <ImagePopup trigger={imagePopup} setTrigger={setImagePopup}>
-                                                            <p>Prompts: {img.prompt}</p>
-                                                            <p>Hashtags: {img.hashtags}</p>
-                                                            <p>Date Created: {img.date_created.split('T')[0]}</p>
+                                                            <p className="text-sm text-zinc-400">Prompts: {img.prompt}</p>
+                                                            <p className="text-sm text-zinc-400">Hashtags: {img.hashtags}</p>
+                                                            <p className="text-sm text-zinc-400">Date Created: {img.date_created.split('T')[0]}</p>
                                                         </ImagePopup>
                                                     )}
                                                 </div>
@@ -394,7 +401,21 @@ function Profile() {
                     </div>
                 </div>
             ) : (
-                <h1>Loading profile...</h1>
+                <div className="bg-zinc-900 h-screen flex justify-center items-center">
+                    <div className="bg-zinc-800 p-10 rounded-lg text-center flex flex-col gap-2 w-96">
+                        {timer ? (
+                            <div>
+                                <h1 className="text-2xl text-white mb-2">Make sure you are logged in</h1>
+                                <button className="text-violet-400 text-sm mt-4" onClick={() => navigate("/")}>Go back to Login Page →</button>
+                            </div>
+                        ) : (
+                            <div>
+                                <h1 className="text-2xl text-white mb-2">Loading Profile...</h1>
+                                <button className="text-violet-400 text-sm mt-4" onClick={() => navigate("/home")}>Go back to Home Page →</button>
+                            </div>
+                        )}
+                    </div>
+                </div>
             )}
         </div>
     );
