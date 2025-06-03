@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import ImagePopup from '../components/ImagePopup';
 import {useAuth} from '../AuthContext';
 import { useSearchParams } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 function ImageGen() {
     const user = useAuth();
@@ -11,6 +12,7 @@ function ImageGen() {
     const [hashtags, setHashtags] = useState("");
     const [showPopup, setShowPopup]=useState(false);
     const [loading, setLoading]=useState(false);
+    const[error, setError]=useState("");
 
     console.log("Using username:", user);
 
@@ -27,6 +29,7 @@ function ImageGen() {
         
         setLoading(true);
         setShowPopup(true);
+        setError("");
 
         let finalUsername = "guest_user";
 
@@ -53,15 +56,18 @@ function ImageGen() {
             setImagePath(imageURL);
             setHashtags(data.image.hashtags);
         } catch (error){
-            alert("Failed to generate image: " + error.message);
             setImagePath("");
+            alert(error.message);
+            setError(error.message);
         } finally{
             setLoading(false);
         }
     };
 
     return(
-        <div className="flex flex-col items-center">
+        
+        <div className="flex flex-col items-center pt-32">
+            <Navbar/>
             <input 
                 type="text"
                 placeholder="Enter a prompt"
@@ -80,6 +86,8 @@ function ImageGen() {
             <div>
                 {loading ? (
                     <p className="text-center text-gray-600">Generating image...</p>
+                ) : error ? (
+                    <p className="text-center text-gray-600">{error}</p>
                 ) : imagePath ? (
                     <div className="flex flex-col items-center">
                         <img
@@ -89,10 +97,7 @@ function ImageGen() {
                         />
                         <p className="text-sm text-gray-600 mt-2">{hashtags}</p>
                     </div>
-                ) : (
-                    <p>Error loading image</p>
-
-                )}
+                ) : null}
             </div>
         </div>
     );

@@ -51,7 +51,7 @@ app.get('/api/users/:username/followingImages', authenticate, getFollowingImages
 app.get('/api/users/:username/publicImages', authenticate, getPublicImages)
 
 //def post route for imag gen
-app.post('/api/generate-images', generateImage)
+app.post('/api/generate-images', authenticate, generateImage)
 
 //def post route fot authetntication
 app.post('/api/protected-route', authenticate, (req,res) =>{
