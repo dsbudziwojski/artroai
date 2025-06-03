@@ -66,7 +66,7 @@ function ImageGen() {
 
     return(
         
-        <div className="flex flex-col items-center pt-32">
+        <div className="flex flex-col items-center pt-32 min-h-screen bg-black text-white">
             <Navbar/>
             <input 
                 type="text"
