@@ -4,6 +4,8 @@ import {useAuth} from '../AuthContext';
 import { useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
+import { auth } from '../firebase';
+import { getIdToken } from 'firebase/auth';
 function ImageGen() {
     const { user: user } = useAuth();
     const [prompt, setPrompt]= useState("");
@@ -32,10 +34,20 @@ function ImageGen() {
 
         let finalUsername = "guest_user";
 
+        
+
         try {
+            if (!auth.currentUser) {
+                throw new Error("Invalid user");
+            }
+            const idToken =  await getIdToken(auth.currentUser, false)
+            const headers = {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${idToken}`
+            }
             const res = await fetch('/api/generate-images', {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: headers,
                 body: JSON.stringify({
                     prompt,
                     created_by
