@@ -71,7 +71,7 @@ function SignUp() {
             alert("Sign-up failed: " + error.message);
         }
     };
-    
+
     return (
         <div className="bg-zinc-900 h-screen flex justify-center items-center">
             <div className="bg-zinc-800 p-10 rounded-lg text-center flex flex-col gap-2 w-96">

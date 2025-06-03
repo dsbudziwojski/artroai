@@ -214,7 +214,7 @@ function Profile() {
     }, [editProfilePopup, isFollowing, followersPopup, followingPopup]);
 
     return (
-        <div className="bg-zinc-900 min-h-screen text-zinc-300">
+        <div className="bg-zinc-900 min-h-screen text-zinc-300 pt-40">
             <Navbar/>
             {userData ? (
                 <div>
