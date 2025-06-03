@@ -1,8 +1,8 @@
 -- CreateTable
 CREATE TABLE "follower" (
     "id" SERIAL NOT NULL,
-    "user_id" VARCHAR(10) NOT NULL,
-    "following_id" VARCHAR(10) NOT NULL,
+    "user_id" VARCHAR(25) NOT NULL,
+    "following_id" VARCHAR(25) NOT NULL,
     "date_followed" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "follower_pkey" PRIMARY KEY ("id")
@@ -15,18 +15,18 @@ CREATE TABLE "image" (
     "prompt" TEXT NOT NULL,
     "hashtags" TEXT NOT NULL,
     "date_created" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "created_by" VARCHAR(10) NOT NULL,
+    "created_by" VARCHAR(25) NOT NULL,
 
     CONSTRAINT "image_pkey" PRIMARY KEY ("image_id")
 );
 
 -- CreateTable
 CREATE TABLE "user_profile" (
-    "username" TEXT NOT NULL,
+    "username" VARCHAR(25) NOT NULL,
     "first_name" VARCHAR(25) NOT NULL,
     "last_name" VARCHAR(25) NOT NULL,
     "bio" TEXT,
-    "email" VARCHAR(100) NOT NULL,
+    "email" VARCHAR(75) NOT NULL,
     "date_created" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "isadmin" BOOLEAN,
     "profile_image_path" TEXT NOT NULL,
