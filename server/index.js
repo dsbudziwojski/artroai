@@ -23,10 +23,6 @@ const port = process.env.PORT || 5001
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Serve generated images statically
-app.use('/api/generated-images', express.static(path.join(__dirname, 'generated_images')));
-
-
 app.use(express.json())
 app.use('/api/generated-images', express.static(path.join(__dirname, 'generated_images')));
 
@@ -55,7 +51,7 @@ app.get('/api/users/:username/followingImages', authenticate, getFollowingImages
 app.get('/api/users/:username/publicImages', authenticate, getPublicImages)
 
 //def post route for imag gen
-app.post('/api/generate-image', authenticate, generateImage)
+app.post('/api/generate-images', generateImage)
 
 //def post route fot authetntication
 app.post('/api/protected-route', authenticate, (req,res) =>{
