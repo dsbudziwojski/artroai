@@ -36,7 +36,7 @@ function SignUp() {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
-                    prompt: `Create Profile Image for ${username}`
+                    prompt: `Create Profile Image for ${username} in a pixel manner`
                 }),
             });
 

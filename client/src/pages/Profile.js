@@ -304,7 +304,7 @@ function Profile() {
                                         </div>
                                     </div>
                                     <h2 className="text-zinc-500">@{userData.username}</h2>
-                                    <p><span className="font-medium text-zinc-600">Joined:</span> {userData.date_created}</p>
+                                    <p><span className="font-medium text-zinc-600">Joined:</span> {userData.date_created.split('T')[0]}</p>
                                     <p><span className="font-medium text-zinc-600">Admin:</span> {userData.isadmin ? "Yes" : "No"}</p>
                                     <p><span className="font-medium text-zinc-600">Bio:</span> {bio}</p>
                                     <div>
@@ -360,7 +360,7 @@ function Profile() {
                                     <h3>Gallery</h3>
                                 </div>
                                 {Array.isArray(posts) ? (
-                                    <div className="flex justify-center mx-5 my-5">
+                                    <div className="flex justify-center flex-wrap mx-5 my-5">
                                         {posts.map((img) => (
                                             <div key={img.image_id} className="rounded-xl ">
                                                 <div className='m-5 w-80 shadow-lg cursor-pointer hover:scale-105'>
@@ -379,7 +379,7 @@ function Profile() {
                                                         <ImagePopup trigger={imagePopup} setTrigger={setImagePopup}>
                                                             <p>Prompts: {img.prompt}</p>
                                                             <p>Hashtags: {img.hashtags}</p>
-                                                            <p>Date Created: {img.date_created}</p>
+                                                            <p>Date Created: {img.date_created.split('T')[0]}</p>
                                                         </ImagePopup>
                                                     )}
                                                 </div>

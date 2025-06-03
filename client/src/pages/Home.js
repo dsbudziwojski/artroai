@@ -104,7 +104,7 @@ function Home() {
         <div className="bg-zinc-900 min-h-screen"> {/* bg-zinc-900*/}
             <DailyPopup trigger={timedPopup} setTrigger={setTimedPopup}>
                 <h3>Hey {myUsername}!</h3>
-                <p>Make sure to generate your daily post! Your current streak is: </p>
+                <p>Make sure to generate your daily post!</p>
             </DailyPopup>
             <Navbar />
             <div className="pt-20 h-full flex overflow-auto bg-zinc-900">

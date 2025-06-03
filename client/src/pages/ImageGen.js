@@ -13,7 +13,6 @@ function ImageGen() {
     const [showPopup, setShowPopup]=useState(false);
     const [loading, setLoading]=useState(false);
     const[error, setError]=useState("");
-
     console.log("Using username:", user);
 
 
@@ -65,39 +64,58 @@ function ImageGen() {
     };
 
     return(
-        
-        <div className="flex flex-col items-center pt-32 min-h-screen bg-black text-white">
+        <div className="bg-zinc-900 h-screen flex justify-center items-center">
             <Navbar/>
-            <input 
-                type="text"
-                placeholder="Enter a prompt"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                className="p-2 rounded bg-gray-200 text-black w-72"
-            />
-
-            <button
-                onClick={genImage}
-                className="mt-3 px-4 py-2 bg-purple-600 text-white rounded"
-            >
-                Generate image
-            </button>
-
-            <div>
-                {loading ? (
-                    <p className="text-center text-gray-600">Generating image...</p>
-                ) : error ? (
-                    <p className="text-center text-gray-600">{error}</p>
-                ) : imagePath ? (
-                    <div className="flex flex-col items-center">
+            <div className="bg-zinc-800 p-10 rounded-lg text-center flex flex-col gap-2 w-96">
+                <div>
+                    {loading ? (
+                        <div className="flex flex-col items-center">
+                            <img
+                                src="/image-generation-loading.png"
+                                alt="Generating Image"
+                                className="max-w-full max-h-[75vh] rounded shadow-md"
+                            />
+                        </div>
+                    ) : error ? (
                         <img
-                            src={imagePath}
-                            alt="AI-art"
+                            src="/image-fail-generation.png"
+                            alt="Generating Image"
                             className="max-w-full max-h-[75vh] rounded shadow-md"
                         />
-                        <p className="text-sm text-gray-600 mt-2">{hashtags}</p>
-                    </div>
-                ) : null}
+                    ) : imagePath ? (
+                        <div className="flex flex-col items-center">
+                            <img
+                                src={imagePath}
+                                alt="AI-art"
+                                className="max-w-full max-h-[75vh] rounded shadow-md"
+                            />
+                            <p className="text-sm text-gray-600 mt-2">{hashtags}</p>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center">
+                            <img
+                                src='/image-pre-prompting.png'
+                                alt="AI-art"
+                                className="max-w-full max-h-[75vh] rounded shadow-md"
+                            />
+                            <p className="text-sm text-gray-600 mt-2">{hashtags}</p>
+                        </div>
+                    )}
+                </div>
+                <textarea
+                    className="w-full bg-zinc-700 border border-zinc-500 overflow-visible resize-none placeholder-zinc-400 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                    placeholder="Enter a prompt"
+                    value={prompt}
+                    rows={4}
+                    onChange={(e) => setPrompt(e.target.value)}
+                />
+
+                <button
+                    onClick={genImage}
+                    className="mt-3 px-4 py-2 bg-violet-500 text-white rounded"
+                >
+                    Generate image
+                </button>
             </div>
         </div>
     );
