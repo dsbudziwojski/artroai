@@ -233,13 +233,13 @@ function Search() {
                         <div className="p-3 flex items-center justify-between rounded-md">
                             <nav className="flex text-zinc-100">
                                 <button
-                                    className={`px-3 py-2 ${viewType === "posts" ? "text-zinc-100" : "text-zinc-500"}`}
+                                    className={`px-3 py-2 ${viewType === "posts" ? "text-zinc-100 rounded-md hover:bg-zinc-100 hover:text-zinc-700 transition" : "text-zinc-500 rounded-md hover:bg-zinc-100 hover:text-zinc-700 transition"}`}
                                     onClick={() => setViewType("posts")}
                                 >
                                     Posts
                                 </button>
                                 <button
-                                    className={`px-3 py-2 ${viewType === "users" ? "text-zinc-100" : "text-zinc-500"}`}
+                                    className={`px-3 py-2 ${viewType === "users" ? "text-zinc-100 rounded-md hover:bg-zinc-100 hover:text-zinc-700 transition" : "text-zinc-500 rounded-md hover:bg-zinc-100 hover:text-zinc-700 transition"}`}
                                     onClick={() => setViewType("users")}
                                 >
                                     Users
@@ -290,7 +290,7 @@ function Search() {
                                 {visiblePostCount < displayedPosts.length && (
                                     <button
                                         onClick={handleLoadMorePosts}
-                                        className="bg-zinc-700 text-zinc-100 px-4 py-2 rounded-md mx-10 mb-5"
+                                        className="bg-zinc-800 text-zinc-100 px-4 py-2 rounded-md mx-10 mb-5 hover:bg-violet-500 text-zinc-100 py-2 px-4 rounded-lg transition"
                                     >
                                         Load More Posts
                                     </button>
@@ -306,7 +306,7 @@ function Search() {
                                         <span className="text-zinc-100">{user.username}</span>
                                         <button
                                             onClick={() => handleProfileClick(user)}
-                                            className="bg-zinc-700 text-zinc-100 px-4 py-2 rounded-md"
+                                            className="bg-zinc-700 text-zinc-100 px-4 py-2 rounded-md hover:bg-zinc-100 hover:text-zinc-700 transition"
                                         >
                                             View Profile
                                         </button>
@@ -315,7 +315,7 @@ function Search() {
                                 {visibleUserCount < displayedUsers.length && (
                                     <button
                                         onClick={handleLoadMoreUsers}
-                                        className="bg-zinc-700 text-zinc-100 px-4 py-2 rounded-md mx-10 mb-5"
+                                        className="bg-zinc-800 text-zinc-100 px-4 py-2 rounded-md mx-10 mb-5 hover:bg-violet-500 text-zinc-100 py-2 px-4 rounded-lg transition"
                                     >
                                         Load More Users
                                     </button>

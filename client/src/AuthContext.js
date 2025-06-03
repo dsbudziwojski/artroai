@@ -18,14 +18,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
-    /*
-    useEffect(() => {
-        return onAuthStateChanged(auth, (user) => {
-            setUser(user)
-            setLoading(false)
-        })
-    }, []);
-    */
+
    useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user?.email.split('@')[0]);
@@ -56,11 +49,11 @@ export function AuthProvider({ children }) {
         signInGoogle,
         signUp,
         login,
-        logout
+        logout,
     };
 
     return(
-        <AuthContext.Provider value={user}>
+        <AuthContext.Provider value={value}>
             {!loading && children}
         </AuthContext.Provider>
     )

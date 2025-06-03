@@ -7,7 +7,7 @@ function GeneralButton({label, route}){
     const navigate = useNavigate();
     return(
         <button
-            className="px-3 py-2"
+            className="px-3 py-2 rounded-md hover:bg-zinc-100 hover:text-violet-800 transition"
             onClick={() => navigate(route)}
         >
             {label}
@@ -37,6 +37,7 @@ function SignOutButton() {
 }
 
 export default function Navbar() {
+    const { user: currentUser } = useAuth();
     return(
         <div className="fixed top-0 left-0 right-0 z-50">
             <nav className="bg-violet-500 text-lg text-zinc-100 shadow-md">
@@ -50,7 +51,7 @@ export default function Navbar() {
                     </div>
                     <div className="flex-1 justify-center mx-3 space-x-4">
                         <GeneralButton label="Home" route="/home"/>
-                        <GeneralButton label="My Account" route={`/profile/${useAuth()}`}/>
+                        <GeneralButton label="My Account" route={`/profile/${currentUser}`}/>
                         <GeneralButton label="Search" route="/search"/>
                         <GeneralButton label="Generate Image" route="/generate/image"/>
                     </div>

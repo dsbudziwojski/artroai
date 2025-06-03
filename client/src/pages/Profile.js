@@ -12,7 +12,7 @@ import {auth} from "../firebase";
 
 function Profile() {
     const { username } = useParams();
-    const currentUser = useAuth();
+    const { user: currentUser } = useAuth();
 
     const [userData, setUserData] = useState(false);
     const [followers, setFollowers] = useState([]);
@@ -90,7 +90,7 @@ function Profile() {
         if(following === undefined){
             console.error("You have no profile");
         }
-        if (following.length > 0 && currentUser) {
+        else if (following.length > 0 && currentUser) {
             setIsFollowing(following.some(follower => follower.user_id === currentUser));
         }
     }, [following, followers, currentUser]);

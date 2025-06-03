@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 
 function ImageGen() {
-    const user = useAuth();
+    const { user: user } = useAuth();
     const [prompt, setPrompt]= useState("");
     // const [username, setUsername]= useState("");
     const [imagePath, setImagePath]= useState("");

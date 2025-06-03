@@ -24,7 +24,7 @@ function Home() {
     const [displayedPosts, setDisplayedPosts] = useState([]);
     const [visiblePostCount, setVisiblePostCount] = useState(3);
 
-    const myUsername = useAuth();
+    const { user: myUsername } = useAuth();
 
     // handle switch from public and private feed
     function handleFeedSwitch(type) {
@@ -114,16 +114,16 @@ function Home() {
                         <nav className="p-3 flex text-zinc-100 justify-center rounded-md">
                             <button
                                 className={`
-                                px-3 py-2
-                                ${feedType === "Public" ? "text-zinc-100" : "text-zinc-500"}
+                                px-4 py-2
+                                ${feedType === "Public" ? "text-zinc-100 rounded-md hover:bg-zinc-100 hover:text-zinc-700 transition" : "text-zinc-500 rounded-md hover:bg-zinc-100 hover:text-zinc-700 transition"}
                                 `}
                                 onClick={() => handleFeedSwitch("Public")}>
                                 Public Feed
                             </button>
                             <button
                                 className={`
-                                px-3 py-2
-                                ${feedType === "Private" ? "text-zinc-100" : "text-zinc-500"}
+                                px-4 py-2
+                                ${feedType === "Private" ? "text-zinc-100 rounded-md hover:bg-zinc-100 hover:text-zinc-700 transition" : "text-zinc-500 rounded-md hover:bg-zinc-100 hover:text-zinc-700 transition"}
                                 `}
                                 onClick={() => handleFeedSwitch("Private")}>
                                 Following Feed
@@ -162,7 +162,7 @@ function Home() {
                                 {visiblePostCount < displayedPosts.length && (
                                     <button
                                         onClick={handleLoadMorePosts}
-                                        className="bg-zinc-700 text-zinc-100 px-4 py-2 rounded-md mx-10 mb-5"
+                                        className="bg-zinc-800 mx-10 mb-5 hover:bg-violet-500 text-zinc-100 py-2 px-4 rounded-lg"
                                     >
                                         Load More Posts
                                     </button>
