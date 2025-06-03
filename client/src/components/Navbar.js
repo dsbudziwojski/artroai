@@ -52,6 +52,7 @@ export default function Navbar() {
                         <GeneralButton label="Home" route="/home"/>
                         <GeneralButton label="My Account" route={`/profile/${useAuth()}`}/>
                         <GeneralButton label="Search" route="/search"/>
+                        <GeneralButton label="Generate Image" route="/generate/image"/>
                     </div>
                     <div className="mx-3">
                         <SignOutButton/>
@@ -61,5 +62,6 @@ export default function Navbar() {
         </div>
     )
 }
+
 
 
