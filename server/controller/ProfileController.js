@@ -256,10 +256,6 @@ export const generateImage = async (req, res) => {
                 path: publicURLPath,
                 hashtags: hashtags,
                 created_by: created_by,
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
             },
 
         });
