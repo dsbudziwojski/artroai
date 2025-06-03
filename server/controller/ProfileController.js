@@ -326,30 +326,13 @@ export const unfollowOther = async (req, res) => {
     }
 }
 
-export const userOrImageSearch = async (req, res) => {
+
+export const allUsersAndImages = async (req, res) => {
     const username = req.username
-    const {text} = req.body
-    if (text === null || typeof(text) === "string" || text.trim() === "" ) {
-        throw new Error("Required input was not valid")
-    }
     try {
-        const images = await prisma.images.findMany({
-            where: {
-                OR: [
-                    {created_by: {contains: text, mode: "insensitive"}},
-                    {tags: {contains: text, mode: "insensitive"}}
-                ]
-            }
-        })
-        const users = await prisma.user_profile.findMany({
-            where: {
-                OR: [
-                    {username: {contains: text, mode: "insensitive"}},
-                    {first_name: {contains: text, mode: "insensitive"}},
-                    {last_name: {contains: text, mode: "insensitive"}},
-                ]
-            }
-        })
+        const images = await prisma.image.findMany()
+        const users = await prisma.user_profile.findMany()
+
         res.status(200).json({images: images, users: users})
     }
     catch (error) {

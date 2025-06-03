@@ -13,9 +13,9 @@ import {
   followOther,
   unfollowOther,
   editProfile,
-  userOrImageSearch,
   getFollowingImages,
-  getPublicImages
+  getPublicImages,
+  allUsersAndImages
 } from "./controller/ProfileController.js";
 
 const app = express()
@@ -44,7 +44,7 @@ app.post('/api/users/:username/follow-other', authenticate, followOther)
 
 app.post('/api/users/:username/unfollow-other', authenticate, unfollowOther)
 
-app.get('/api/users/:username/usersOrImages', authenticate, userOrImageSearch)
+app.get('/api/users/:username/all-users-and-images', authenticate, allUsersAndImages)
 
 app.get('/api/users/:username/followingImages', authenticate, getFollowingImages)
 
