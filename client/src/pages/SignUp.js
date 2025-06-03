@@ -32,20 +32,21 @@ function SignUp() {
             const username = firebaseUser.email.split("@")[0]
 
             // profile image gen
-            const res = await fetch('/api/generate-images', {
+            const res = await fetch('/api/generate-profile-image', {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: headers,
                 body: JSON.stringify({
-                    prompt: `Create Profile Image for ${username} in a pixel manner`
+                    prompt: `Create Profile Image for ${username} in a pixel manner`,
+                    created_by: username
                 }),
             });
 
             const data = await res.json();
-            if(!res.ok || !data.image){
+            if(!res.ok || !data.path){
                 throw new Error(data.errorMsg || "Image generation failure");
             }
 
-            const imageURL= data.image.path
+            const imageURL= data.path
             setProfileImagePath(imageURL)
 
             const response = await fetch("/api/users", {
