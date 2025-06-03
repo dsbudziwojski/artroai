@@ -27,6 +27,8 @@ function Profile() {
     const [editProfilePopup, setEditProfilePopup] = useState(false);
     const [addedFollowersPopup, setAddedFollowersPopup] = useState(false);
     const [removedFollowersPopup, setRemovedFollowersPopup] = useState(false);
+    const [justFollowed, setJustFollowed] = useState(false);
+    const [justUnfollowed, setJustUnfollowed] = useState(false);
 
     const [selectedImage, setSelectedImage] = useState(null);
     const [isFollowing, setIsFollowing] = useState(null);
@@ -114,6 +116,7 @@ function Profile() {
             setIsFollowing(true);
             setFollowing(prev => [...prev, { user_id: currentUser, following_id: username }]);
             setFollowerCount(followerCount+1);
+            setJustUnfollowed(true);
         }
         console.log("Follow clicked. currentUser:", currentUser, "following_id (username):", username);
     }
@@ -139,6 +142,7 @@ function Profile() {
             setIsFollowing(false);
             setFollowers(prev => prev.filter(f => f.following_id !== username));
             setFollowerCount(followerCount-1);
+            setJustFollowed(true);
         }
     }
 
@@ -211,7 +215,30 @@ function Profile() {
         if(followingPopup){
             setDisplayFollowers(followers);
         }
-    }, [editProfilePopup, isFollowing, followersPopup, followingPopup]);
+    }, [followerCount, 
+        followingCount, 
+        followersPopup, 
+        followingPopup, 
+        editProfilePopup,
+        following,
+        followers,
+        firstName,
+        lastName,
+        bio]);
+
+    useEffect(() => {
+        if (justFollowed) {
+            setAddedFollowersPopup(true);
+            setJustFollowed(false);
+        }
+    }, [justFollowed]);
+    
+    useEffect(() => {
+        if (justUnfollowed) {
+            setRemovedFollowersPopup(true);
+            setJustUnfollowed(false);
+        }
+    }, [justUnfollowed]);
 
     return (
         <div className="bg-zinc-900 min-h-screen text-zinc-300">
@@ -240,14 +267,14 @@ function Profile() {
                             </div>
                         ) : isFollowing ? (
                             <div>
-                                <button onClick={async () => {await handleUnfollow(); await setRemovedFollowersPopup(true)}}>Unfollow</button>
+                                <button onClick={handleUnfollow}>Unfollow</button>
                                 <AddedFollowerPopup trigger={removedFollowersPopup} setTrigger={setRemovedFollowersPopup}>
                                     <p>Added @{username}</p>
                                 </AddedFollowerPopup>
                             </div>
                         ) : (
                             <div>
-                                <button onClick={async () => {await handleFollow(); await setAddedFollowersPopup(true)}}>Follow</button>
+                                <button onClick={handleFollow}>Follow</button>
                                 <AddedFollowerPopup trigger={addedFollowersPopup} setTrigger={setAddedFollowersPopup}>
                                     <p>Removed @{username}</p>
                                 </AddedFollowerPopup>
@@ -259,65 +286,77 @@ function Profile() {
                             <button onClick={() => setFollowersPopup(true)}>Followers</button>: {displayFollowerCount}
                             <FollowerPopup trigger={followersPopup} setTrigger={setFollowersPopup}>
                                 <h4>Profiles that follow @{username}: </h4>
-                                <ul>
-                                    {displayFollowing.map((follower) => (
-                                        <li key={follower.user_id}>
-                                            <a href={`/profile/${follower.user_id}`}>
-                                                <button onClick={() => {navigate(`/profile/${follower.user_id}`); setFollowersPopup(false)}}>
-                                                    @{follower.user_id}
-                                                </button>
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
+                                {Array.isArray(displayFollowing) ? (
+                                    <ul>
+                                        {displayFollowing.map((follower) => (
+                                            <li key={follower.user_id}>
+                                                <a href={`/profile/${follower.user_id}`}>
+                                                    <button onClick={() => {navigate(`/profile/${follower.user_id}`); setFollowersPopup(false)}}>
+                                                        @{follower.user_id}
+                                                    </button>
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p>No users found.</p>
+                                )}
                             </FollowerPopup>
                         </div>
                         <div>
                             <button onClick={() => setFollowingPopup(true)}>Following</button>: {displayFollowingCount}
                             <FollowerPopup trigger={followingPopup} setTrigger={setFollowingPopup}>
                                 <h4>Profiles that @{username} follows: </h4>
-                                <ul>
-                                    {displayFollowers.map((follow) => (
-                                        <li key={follow.following_id}>
-                                            <a href={`/profile/${follow.following_id}`}>
-                                                <button onClick={() => {navigate(`/profile/${follow.following_id}`); setFollowingPopup(false)}}>
-                                                    @{follow.following_id}
-                                                </button>
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
+                                {Array.isArray(displayFollowing) ? (
+                                    <ul>
+                                        {displayFollowers.map((follow) => (
+                                            <li key={follow.following_id}>
+                                                <a href={`/profile/${follow.following_id}`}>
+                                                    <button onClick={() => {navigate(`/profile/${follow.following_id}`); setFollowingPopup(false)}}>
+                                                        @{follow.following_id}
+                                                    </button>
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p>No users found.</p>
+                                )}
                             </FollowerPopup>
                         </div>
                     </div>
                     <div className="flex justify-center">
                         <h3>Gallery: </h3>
-                        <div className="flex justify-center flex-wrap mx-5 my-10">
-                            {posts.map((img) => (
-                                <div key={img.image_id} className="rounded-xl ">
-                                    <div className='m-5 w-96 shadow-lg cursor-pointer hover:scale-105'>
-                                        <img
-                                            src={img.path}
-                                            alt={img.prompt}
-                                            onClick={() => {
-                                                setImagePopup(true);
-                                                setSelectedImage(img);}}
-                                            className="w-full h-auto"
-                                        >
-                                        </img>
+                        {Array.isArray(posts) ? (
+                            <div className="flex justify-center flex-wrap mx-5 my-10">
+                                {posts.map((img) => (
+                                    <div key={img.image_id} className="rounded-xl ">
+                                        <div className='m-5 w-96 shadow-lg cursor-pointer hover:scale-105'>
+                                            <img
+                                                src={img.path}
+                                                alt={img.prompt}
+                                                onClick={() => {
+                                                    setImagePopup(true);
+                                                    setSelectedImage(img);}}
+                                                className="w-full h-auto"
+                                            >
+                                            </img>
+                                        </div>
+                                        <div className="relative">
+                                            {selectedImage?.image_id === img.image_id && (
+                                                <ImagePopup trigger={imagePopup} setTrigger={setImagePopup}>
+                                                    <p>Prompts: {img.prompt}</p>
+                                                    <p>Hashtags: {img.hashtags}</p>
+                                                    <p>Date Created: {img.date_created}</p>
+                                                </ImagePopup>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="relative">
-                                        {selectedImage?.image_id === img.image_id && (
-                                            <ImagePopup trigger={imagePopup} setTrigger={setImagePopup}>
-                                                <p>Prompts: {img.prompt}</p>
-                                                <p>Hashtags: {img.hashtags}</p>
-                                                <p>Date Created: {img.date_created}</p>
-                                            </ImagePopup>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p>No posts found.</p>
+                        )}
                     </div>
                 </div>
             ) : (
