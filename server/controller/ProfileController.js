@@ -137,7 +137,7 @@ function saveBase64Im(base64Im, directory){
 
 export const generateProfileImage = async (req, res) => {
     try {
-        const { prompt } = req.body;
+        const { prompt, created_by } = req.body;
 
         if(!prompt || prompt.trim() === '') {
             console.warn("Missing prompt");
@@ -152,7 +152,7 @@ export const generateProfileImage = async (req, res) => {
         const response= await openai.images.generate({
             prompt,
             n:1,
-            size: '64x64',
+            size: '256x256',
             response_format: 'b64_json',
         });
         if (!response || !response.data || !response.data[0]?.b64_json) {
@@ -168,7 +168,7 @@ export const generateProfileImage = async (req, res) => {
         const fileName= path.basename(fullFilePath);
 
         const profileImagePath=`/api/generated-images/${fileName}`;
-        res.status(200).json({public: profileImagePath});
+        res.status(200).json({path: profileImagePath});
     }
     catch(error) {
         console.error('Error generating profile image: ', error);
