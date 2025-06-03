@@ -28,7 +28,7 @@ model image {
 }
 
 model user_profile {
-  username                                     String     @id @db.VarChar(10)
+  username                                     String     @id
   first_name                                   String     @db.VarChar(25)
   last_name                                    String     @db.VarChar(25)
   bio                                          String?
@@ -38,4 +38,5 @@ model user_profile {
   follower_follower_following_idTouser_profile follower[] @relation("follower_following_idTouser_profile")
   follower_follower_user_idTouser_profile      follower[] @relation("follower_user_idTouser_profile")
   image                                        image[]
+  profile_image_path                           String
 }
