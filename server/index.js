@@ -15,7 +15,8 @@ import {
   editProfile,
   getFollowingImages,
   getPublicImages,
-  allUsersAndImages
+  allUsersAndImages,
+  generateProfileImage
 } from "./controller/ProfileController.js";
 
 const app = express()
@@ -57,6 +58,8 @@ app.post('/api/generate-images', authenticate, generateImage)
 app.post('/api/protected-route', authenticate, (req,res) =>{
   res.status(200).json({message:'Authenticated!', user: req.user});
 });
+
+app.post('/api/generate-profile-image', authenticate, generateProfileImage)
 
 // TESTING APIs FOR FRONTEND (while endpoints are still being worked on...)
 

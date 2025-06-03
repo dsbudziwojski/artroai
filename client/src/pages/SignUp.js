@@ -9,6 +9,8 @@ function SignUp() {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(true)
+    const [profileImagePath, setProfileImagePath] = useState(logo)
 
     const navigate = useNavigate();
 
@@ -45,7 +47,24 @@ function SignUp() {
             if (!response.ok) {
                 throw new Error("Failed create user profile");
             }
-            navigate("/home");
+
+            // profile image gen
+            const res = await fetch('/api/generate-images', {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    prompt: `Create Profile Image for ${username}`
+                }),
+            });
+
+            const data = await res.json();
+            if(!res.ok || !data.image){
+                throw new Error(data.errorMsg || "Image generation failure");
+            }
+
+            const imageURL= data.image.path
+            setProfileImagePath(imageURL)
+            // navigate("/home");
         } catch (error){
             console.error("Sign-up error:" , error.message);
             alert("Sign-up failed: " + error.message);
@@ -63,6 +82,7 @@ function SignUp() {
                 <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}} required/>
                 <button className="bg-violet-500 text-sm text-zinc-100 p-1.5 w-full rounded" onClick={handleSignUp}>Sign Up</button>
                 <NavLink to={"/"} className="text-violet-400 text-sm mt-4"><button>Switch to Login →</button></NavLink>
+                <img src={profileImagePath} />
             </div>
         </div>
     );
