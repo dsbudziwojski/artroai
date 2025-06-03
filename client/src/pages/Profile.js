@@ -241,92 +241,116 @@ function Profile() {
     }, [justUnfollowed]);
 
     return (
-        <div className="bg-zinc-900 min-h-screen text-zinc-300 pt-40">
+        <div className="bg-zinc-900 min-h-screen text-zinc-300 pt-36">
             <Navbar/>
             {userData ? (
                 <div>
                     <div>
-                        <div className="w-80 m-5 rounded-xl">
-                            <img src={userData.profile_image_path}/>
-                            <h1>{firstName} {lastName}'s profile</h1>
-                            <h2>@{userData.username}</h2>
-                            <p>Joined: {userData.date_created}</p>
-                            <p>Admin: {userData.isadmin ? "Yes" : "No"}</p>
-                            <p>Bio: {bio}</p>
-                        </div>
-
-                        {currentUser === username ? (
-                            <div>
-                                <button onClick={() => setEditProfilePopup(true)}>Edit Profile</button>
-                                <EditProfilePopup trigger={editProfilePopup} setTrigger={setEditProfilePopup}>
-                                    <div>
-                                        <h1>Edit Profile:</h1>
-                                        <input type="text" placeholder="First Name" value={displayFirstName} onChange={(e) => {setDisplayFirstName(e.target.value)}}/>
-                                        <input type="text" placeholder="Last Name" value={displayLastName} onChange={(e) => {setDisplayLastName(e.target.value)}}/>
-                                        <input type="text" placeholder="Bio Name" value={displayBio} onChange={(e) => {setDisplayBio(e.target.value)}}/>
-                                        <br></br>
-                                        <button onClick={() => {handleProfileUpdate(displayFirstName, displayLastName, displayBio); setEditProfilePopup(false)}}>Save Changes</button>
+                        <div  className="flex justify-center">
+                            <div className="w-[1200px] h-max m-5 p-4 bg-zinc-800 rounded-xl shadow-sm flex items-center space-x-4">
+                                <div className="w-80 m-5 rounded-full overflow-hidden border-2 border-violet-400">
+                                    <img
+                                        src={userData.profile_image_path}
+                                        alt="Profile"
+                                        className="w-full h-full "
+                                    />
+                                </div>
+                                <div className="text-sm text-zinc-400">
+                                    <div className="flex items-center">
+                                        <h1 className="text-lg font-semibold text-violet-400 pr-2">
+                                            {firstName} {lastName}
+                                        </h1>
+                                        <div className="px-2">
+                                            <button onClick={() => setFollowersPopup(true)}>Followers</button>: {displayFollowerCount}
+                                            <FollowerPopup trigger={followersPopup} setTrigger={setFollowersPopup}>
+                                                <h4>Profiles that follow @{username}: </h4>
+                                                {Array.isArray(displayFollowing) ? (
+                                                    <ul>
+                                                        {displayFollowing.map((follower) => (
+                                                            <li key={follower.user_id}>
+                                                                <a href={`/profile/${follower.user_id}`}>
+                                                                    <button onClick={() => {navigate(`/profile/${follower.user_id}`); setFollowersPopup(false)}}>
+                                                                        @{follower.user_id}
+                                                                    </button>
+                                                                </a>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                ) : (
+                                                    <p>No users found.</p>
+                                                )}
+                                            </FollowerPopup>
+                                        </div>
+                                        <div className="px-2">
+                                            <button onClick={() => setFollowingPopup(true)}>Following</button>: {displayFollowingCount}
+                                            <FollowerPopup trigger={followingPopup} setTrigger={setFollowingPopup}>
+                                                <h4>Profiles that @{username} follows: </h4>
+                                                {Array.isArray(displayFollowing) ? (
+                                                    <ul>
+                                                        {displayFollowers.map((follow) => (
+                                                            <li key={follow.following_id}>
+                                                                <a href={`/profile/${follow.following_id}`}>
+                                                                    <button onClick={() => {navigate(`/profile/${follow.following_id}`); setFollowingPopup(false)}}>
+                                                                        @{follow.following_id}
+                                                                    </button>
+                                                                </a>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                ) : (
+                                                    <p>No users found.</p>
+                                                )}
+                                            </FollowerPopup>
+                                        </div>
                                     </div>
-                                </EditProfilePopup>
+                                    <h2 className="text-zinc-500">@{userData.username}</h2>
+                                    <p><span className="font-medium text-zinc-600">Joined:</span> {userData.date_created}</p>
+                                    <p><span className="font-medium text-zinc-600">Admin:</span> {userData.isadmin ? "Yes" : "No"}</p>
+                                    <p><span className="font-medium text-zinc-600">Bio:</span> {bio}</p>
+                                    <div>
+                                        {currentUser === username ? (
+                                            <div>
+                                                <button
+                                                    className="text-zinc-400 rounded-md hover:text-zinc-50 transition"
+                                                    onClick={() => setEditProfilePopup(true)}
+                                                >Edit Profile</button>
+                                                <EditProfilePopup trigger={editProfilePopup} setTrigger={setEditProfilePopup}>
+                                                    <div>
+                                                        <h1>Edit Profile:</h1>
+                                                        <input type="text" placeholder="First Name" value={displayFirstName} onChange={(e) => {setDisplayFirstName(e.target.value)}}/>
+                                                        <input type="text" placeholder="Last Name" value={displayLastName} onChange={(e) => {setDisplayLastName(e.target.value)}}/>
+                                                        <input type="text" placeholder="Bio Name" value={displayBio} onChange={(e) => {setDisplayBio(e.target.value)}}/>
+                                                        <br></br>
+                                                        <button onClick={() => {handleProfileUpdate(displayFirstName, displayLastName, displayBio); setEditProfilePopup(false)}}>Save Changes</button>
+                                                    </div>
+                                                </EditProfilePopup>
+                                            </div>
+                                        ) : isFollowing ? (
+                                            <div>
+                                                <button
+                                                    className="text-zinc-400 rounded-md hover:text-zinc-50 transition"
+                                                    onClick={handleUnfollow}>Unfollow</button>
+                                                <AddedFollowerPopup trigger={removedFollowersPopup} setTrigger={setRemovedFollowersPopup}>
+                                                    <p>Added @{username}</p>
+                                                </AddedFollowerPopup>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <button
+                                                    className="text-zinc-400 rounded-md hover:text-zinc-50 transition"
+                                                    onClick={handleFollow}>Follow</button>
+                                                <AddedFollowerPopup trigger={addedFollowersPopup} setTrigger={setAddedFollowersPopup}>
+                                                    <p>Removed @{username}</p>
+                                                </AddedFollowerPopup>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div>
+
+                                </div>
                             </div>
-                        ) : isFollowing ? (
-                            <div>
-                                <button onClick={handleUnfollow}>Unfollow</button>
-                                <AddedFollowerPopup trigger={removedFollowersPopup} setTrigger={setRemovedFollowersPopup}>
-                                    <p>Added @{username}</p>
-                                </AddedFollowerPopup>
-                            </div>
-                        ) : (
-                            <div>
-                                <button onClick={handleFollow}>Follow</button>
-                                <AddedFollowerPopup trigger={addedFollowersPopup} setTrigger={setAddedFollowersPopup}>
-                                    <p>Removed @{username}</p>
-                                </AddedFollowerPopup>
-                            </div>
-                        )}
-                    </div>
-                    <div>
-                        <div>
-                            <button onClick={() => setFollowersPopup(true)}>Followers</button>: {displayFollowerCount}
-                            <FollowerPopup trigger={followersPopup} setTrigger={setFollowersPopup}>
-                                <h4>Profiles that follow @{username}: </h4>
-                                {Array.isArray(displayFollowing) ? (
-                                    <ul>
-                                        {displayFollowing.map((follower) => (
-                                            <li key={follower.user_id}>
-                                                <a href={`/profile/${follower.user_id}`}>
-                                                    <button onClick={() => {navigate(`/profile/${follower.user_id}`); setFollowersPopup(false)}}>
-                                                        @{follower.user_id}
-                                                    </button>
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p>No users found.</p>
-                                )}
-                            </FollowerPopup>
-                        </div>
-                        <div>
-                            <button onClick={() => setFollowingPopup(true)}>Following</button>: {displayFollowingCount}
-                            <FollowerPopup trigger={followingPopup} setTrigger={setFollowingPopup}>
-                                <h4>Profiles that @{username} follows: </h4>
-                                {Array.isArray(displayFollowing) ? (
-                                    <ul>
-                                        {displayFollowers.map((follow) => (
-                                            <li key={follow.following_id}>
-                                                <a href={`/profile/${follow.following_id}`}>
-                                                    <button onClick={() => {navigate(`/profile/${follow.following_id}`); setFollowingPopup(false)}}>
-                                                        @{follow.following_id}
-                                                    </button>
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p>No users found.</p>
-                                )}
-                            </FollowerPopup>
                         </div>
                     </div>
                     <div className="flex justify-center">
