@@ -1,31 +1,42 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import ImagePopup from '../components/ImagePopup';
 import {useAuth} from '../AuthContext';
 import { useSearchParams } from 'react-router-dom';
 
 function ImageGen() {
-    const { user } =useAuth();
+    const user = useAuth();
     const [prompt, setPrompt]= useState("");
+    // const [username, setUsername]= useState("");
     const [imagePath, setImagePath]= useState("");
     const [hashtags, setHashtags] = useState("");
     const [showPopup, setShowPopup]=useState(false);
     const [loading, setLoading]=useState(false);
 
+    console.log("Using username:", user);
+
+
     const genImage = async () => {
-        if (!user || (!user.displayName && !user.email)){
-            return alert("Please sign in to generate image");
+        if (!user){
+            alert("Please sign in to generate image");
+            return;
         }
 
+        const created_by =user;
+        console.log("Sending request with created_by: ", created_by);
+
+        
         setLoading(true);
         setShowPopup(true);
 
+        let finalUsername = "guest_user";
+
         try {
-            const res = await fetch('/api/generate-image', {
+            const res = await fetch('/api/generate-images', {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
                     prompt,
-                    created_by: user.displayName || user.email
+                    created_by
                 }),
             });
 
@@ -37,7 +48,8 @@ function ImageGen() {
             console.log("Image path from backend:", data.image.path);
             console.log("Hashtags:", data.image.hashtags);
 
-            const imageURL= `/api/generate-image/${data.image.path.split('/').pop()}`;
+            const imageURL= data.image.path //`/api/generated-image/${data.image.path.split('/').pop()}`;
+            console.log("image url:", imageURL);
             setImagePath(imageURL);
             setHashtags(data.image.hashtags);
         } catch (error){
@@ -65,7 +77,7 @@ function ImageGen() {
                 Generate image
             </button>
 
-            <ImagePopup trigger={showPopup} setTrigger={setShowPopup}>
+            <div>
                 {loading ? (
                     <p className="text-center text-gray-600">Generating image...</p>
                 ) : imagePath ? (
@@ -81,7 +93,7 @@ function ImageGen() {
                     <p>Error loading image</p>
 
                 )}
-            </ImagePopup>
+            </div>
         </div>
     );
 }

@@ -9,7 +9,7 @@ import { fileURLToPath } from "url";
 import express from "express";
 
 const openai= new OpenAI({
-    apikeKey: process.env.OpenAI_API_KEY,
+    apiKey: process.env.OpenAI_API_KEY,
 });
 
 const __filename=fileURLToPath(import.meta.url);
@@ -148,7 +148,7 @@ export const generateImage = async (req, res) => {
         }
 
         if(!created_by || prompt.trim() === '') {
-            console.warn("❌ Missing created_by");
+            console.warn("Missing created_by");
             throw new Error("username is required");
         }
 
@@ -160,22 +160,29 @@ export const generateImage = async (req, res) => {
             n:1,
             size: '512x512',
             response_format: 'b64_json',
+
         });
 
-        console.log(response.data[0].b64_json) //get the output of the api for testing
+        if (!response || !response.data || !response.data[0]?.b64_json) {
+            throw new Error("Invalid response from OpenAI image generation");
+        }
+        
+
+        //console.log(response.data[0].b64_json) //get the output of the api for testing
 
         const base64imag= response.data[0].b64_json;
-        console.log("✅ Image received from OpenAI");
+        console.log("Image received from OpenAI");
 
         const dir=path.join(__dirname,'..', 'generated_images');
 
         //store image as filepath
 
         const fullFilePath= saveBase64Im(base64imag, dir); //call func
+        const fileName=path.basename(fullFilePath);
 
-        const relFilePath=path.relative(process.cwd(), fullFilePath);
-        console.log("💾 Image saved to:", relFilePath);
-        const publicURLPath='/api/generated-images/${fileName}';
+        // const relFilePath=path.relative(process.cwd(), fullFilePath);
+        // console.log("💾 Image saved to:", relFilePath);
+        const publicURLPath=`/api/generated-images/${fileName}`;
 
         //generate hashtag response
 
@@ -183,9 +190,9 @@ export const generateImage = async (req, res) => {
             model: 'gpt-4',
             messages:[
                 {role: 'system', content: 'You are a helpful assistant that generates hashtags.'},
-                {role: 'user', content: `Generate 2 relevant hashtags for the following prompt: "${prompt}`},
+                {role: 'user', content: `Generate 3 unique relevant hashtags for the following prompt no longer than 7 characters: "${prompt}`},
             ],
-            max_tokens:10,
+            max_tokens:21,
             temperature: 0.7,
 
         });
