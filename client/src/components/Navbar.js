@@ -49,8 +49,8 @@ export default function Navbar() {
                         />
                     </div>
                     <div className="flex-1 justify-center mx-3 space-x-4">
-                        <GeneralButton label="My Account" route={`/profile/${useAuth()}`}/>
                         <GeneralButton label="Home" route="/home"/>
+                        <GeneralButton label="My Account" route={`/profile/${useAuth()}`}/>
                         <GeneralButton label="Search" route="/search"/>
                         <GeneralButton label="Generate Image" route="/generate/image"/>
                     </div>

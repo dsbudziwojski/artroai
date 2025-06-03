@@ -115,7 +115,7 @@ function Profile() {
     }
 
     return (
-        <div className="bg-zinc-900 min-h-screen">
+        <div className="bg-zinc-900 min-h-screen text-zinc-300">
             <Navbar/>
             {userData ? (
                 <div>
@@ -140,40 +140,42 @@ function Profile() {
                         )}
                     </div>
                     <div>
-                        <button onClick={() => setfollowersPopup(true)}>Followers</button>
-                        <p>Followers: {followerCount}</p>
-                        <FollowerPopup trigger={followersPopup} setTrigger={setfollowersPopup}>
-                            <h4>Profiles that follow @{username}: </h4>
-                            <ul>
-                                {following.map((follower) => (
-                                    <a href="">
-                                        <li key={follower.user_id} onClick={() => {
-                                            navigate(`/profile/${follower.user_id}`)
-                                            setfollowersPopup(false)
+                        <div>
+                            <button onClick={() => setfollowersPopup(true)}>Followers</button>: {followerCount}
+                            <FollowerPopup trigger={followersPopup} setTrigger={setfollowersPopup}>
+                                <h4>Profiles that follow @{username}: </h4>
+                                <ul>
+                                    {following.map((follower) => (
+                                        <a href="">
+                                            <li key={follower.user_id} onClick={() => {
+                                                navigate(`/profile/${follower.user_id}`)
+                                                setfollowersPopup(false)
                                             }}>
                                                 @{follower.user_id}
-                                        </li>
-                                    </a>
-                                ))}
-                            </ul>
-                        </FollowerPopup>
-                        <button onClick={() => setfollowingPopup(true)}>Following</button>
-                        <p>Following: {followingCount}</p>
-                        <FollowerPopup trigger={followingPopup} setTrigger={setfollowingPopup}>
-                            <h4>Profiles that @{username} follows: </h4>
-                            <ul>
-                                {followers.map((follow) => (
-                                    <a href="">
-                                        <li key={follow.following_id} onClick={() => {
-                                            navigate(`/profile/${follow.following_id}`)
-                                            setfollowingPopup(false)
+                                            </li>
+                                        </a>
+                                    ))}
+                                </ul>
+                            </FollowerPopup>
+                        </div>
+                        <div>
+                            <button onClick={() => setfollowingPopup(true)}>Following</button>: {followingCount}
+                            <FollowerPopup trigger={followingPopup} setTrigger={setfollowingPopup}>
+                                <h4>Profiles that @{username} follows: </h4>
+                                <ul>
+                                    {followers.map((follow) => (
+                                        <a href="">
+                                            <li key={follow.following_id} onClick={() => {
+                                                navigate(`/profile/${follow.following_id}`)
+                                                setfollowingPopup(false)
                                             }}>
                                                 @{follow.following_id}
-                                        </li>
-                                    </a>
-                                ))}
-                            </ul>
-                        </FollowerPopup>
+                                            </li>
+                                        </a>
+                                    ))}
+                                </ul>
+                            </FollowerPopup>
+                        </div>
                     </div>
                     <div className="flex justify-center">
                         <h3>Gallery: </h3>
