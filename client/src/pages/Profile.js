@@ -241,13 +241,13 @@ function Profile() {
     }, [justUnfollowed]);
 
     return (
-        <div className="bg-zinc-900 min-h-screen text-zinc-300 pt-36">
+        <div className="bg-zinc-900 min-h-screen text-zinc-300 pt-20">
             <Navbar/>
             {userData ? (
                 <div>
                     <div>
                         <div  className="flex justify-center">
-                            <div className="w-[1200px] h-max m-5 p-4 bg-zinc-800 rounded-xl shadow-sm flex items-center space-x-4">
+                            <div className="w-[1200px] h-max mt-5 p-4 bg-zinc-800 rounded-xl shadow-sm flex items-center space-x-4">
                                 <div className="w-80 m-5 rounded-full overflow-hidden border-2 border-violet-400">
                                     <img
                                         src={userData.profile_image_path}
@@ -311,7 +311,7 @@ function Profile() {
                                         {currentUser === username ? (
                                             <div>
                                                 <button
-                                                    className="text-zinc-400 rounded-md hover:text-zinc-50 transition"
+                                                    className="text-zinc-500 rounded-md hover:text-zinc-50 transition"
                                                     onClick={() => setEditProfilePopup(true)}
                                                 >Edit Profile</button>
                                                 <EditProfilePopup trigger={editProfilePopup} setTrigger={setEditProfilePopup}>
@@ -328,7 +328,7 @@ function Profile() {
                                         ) : isFollowing ? (
                                             <div>
                                                 <button
-                                                    className="text-zinc-400 rounded-md hover:text-zinc-50 transition"
+                                                    className="text-zinc-500 rounded-md hover:text-zinc-50 transition"
                                                     onClick={handleUnfollow}>Unfollow</button>
                                                 <AddedFollowerPopup trigger={removedFollowersPopup} setTrigger={setRemovedFollowersPopup}>
                                                     <p>Added @{username}</p>
@@ -337,7 +337,7 @@ function Profile() {
                                         ) : (
                                             <div>
                                                 <button
-                                                    className="text-zinc-400 rounded-md hover:text-zinc-50 transition"
+                                                    className="text-zinc-500 rounded-md hover:text-zinc-50 transition"
                                                     onClick={handleFollow}>Follow</button>
                                                 <AddedFollowerPopup trigger={addedFollowersPopup} setTrigger={setAddedFollowersPopup}>
                                                     <p>Removed @{username}</p>
@@ -354,37 +354,43 @@ function Profile() {
                         </div>
                     </div>
                     <div className="flex justify-center">
-                        <h3>Gallery: </h3>
-                        {Array.isArray(posts) ? (
-                            <div className="flex justify-center flex-wrap mx-5 my-10">
-                                {posts.map((img) => (
-                                    <div key={img.image_id} className="rounded-xl ">
-                                        <div className='m-5 w-96 shadow-lg cursor-pointer hover:scale-105'>
-                                            <img
-                                                src={img.path}
-                                                alt={img.prompt}
-                                                onClick={() => {
-                                                    setImagePopup(true);
-                                                    setSelectedImage(img);}}
-                                                className="w-full h-auto"
-                                            >
-                                            </img>
-                                        </div>
-                                        <div className="relative">
-                                            {selectedImage?.image_id === img.image_id && (
-                                                <ImagePopup trigger={imagePopup} setTrigger={setImagePopup}>
-                                                    <p>Prompts: {img.prompt}</p>
-                                                    <p>Hashtags: {img.hashtags}</p>
-                                                    <p>Date Created: {img.date_created}</p>
-                                                </ImagePopup>
-                                            )}
-                                        </div>
+                        <div className="w-[1200px] h-max m-6 p-4 bg-zinc-800 rounded-xl shadow-sm space-x-4">
+                            <div className="flex flex-col">
+                                <div className="flex justify-center text-zinc-300 text-lg pt-5">
+                                    <h3>Gallery</h3>
+                                </div>
+                                {Array.isArray(posts) ? (
+                                    <div className="flex justify-center mx-5 my-5">
+                                        {posts.map((img) => (
+                                            <div key={img.image_id} className="rounded-xl ">
+                                                <div className='m-5 w-80 shadow-lg cursor-pointer hover:scale-105'>
+                                                    <img
+                                                        src={img.path}
+                                                        alt={img.prompt}
+                                                        onClick={() => {
+                                                            setImagePopup(true);
+                                                            setSelectedImage(img);}}
+                                                        className="w-full h-auto"
+                                                    >
+                                                    </img>
+                                                </div>
+                                                <div className="relative">
+                                                    {selectedImage?.image_id === img.image_id && (
+                                                        <ImagePopup trigger={imagePopup} setTrigger={setImagePopup}>
+                                                            <p>Prompts: {img.prompt}</p>
+                                                            <p>Hashtags: {img.hashtags}</p>
+                                                            <p>Date Created: {img.date_created}</p>
+                                                        </ImagePopup>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                ) : (
+                                    <p>No posts found.</p>
+                                )}
                             </div>
-                        ) : (
-                            <p>No posts found.</p>
-                        )}
+                        </div>
                     </div>
                 </div>
             ) : (
