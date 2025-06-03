@@ -183,7 +183,7 @@ export const generateImage = async (req, res) => {
     try {
         // TODO
         const { prompt, created_by } = req.body;
-        console.log("📥 Incoming request body:", req.body);
+        console.log("Incoming request body:", req.body);
         
         if(!prompt || prompt.trim() === '') {
             console.warn("Missing prompt");
@@ -201,7 +201,7 @@ export const generateImage = async (req, res) => {
         const response= await openai.images.generate({
             prompt,
             n:1,
-            size: '256x256',
+            size: '512x512',
             response_format: 'b64_json',
 
         });
@@ -259,6 +259,14 @@ export const generateImage = async (req, res) => {
             },
 
         });
+
+        const userImages = await prisma.image.findMany({
+            where: {
+              created_by: 'neo01'  // Use the actual username or UID depending on your schema
+            },
+          });
+          console.log("meta data for images", userImages);
+          
         console.log("Image metadata saved to database");
 
         res.status(200).json({image: savedImage});
