@@ -284,7 +284,7 @@ function Search() {
                                             </button>
                                         </p>
                                         <p><strong>Tags:</strong> {post.hashtags}</p>
-                                        <p style={{ fontSize: "0.8rem", color: "gray" }}>{post.date_created}</p>
+                                        <p style={{ fontSize: "0.8rem", color: "gray" }}>{post.date_created.split('T')[0]}</p>
                                     </div>
                                 ))}
                                 {visiblePostCount < displayedPosts.length && (
