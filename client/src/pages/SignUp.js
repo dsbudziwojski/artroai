@@ -1,8 +1,9 @@
-import {useState} from "react";
-import { NavLink, useNavigate } from 'react-router-dom';
+import {use, useState} from "react";
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
 import logo from '../artroai.png';
 import {auth} from '../firebase';
 import {createUserWithEmailAndPassword, getIdToken, updateProfile} from "firebase/auth";
+//import { useAuth } from "../AuthContext";
 
 function SignUp() {
     const [firstName, setFirstName] = useState("");
@@ -11,13 +12,14 @@ function SignUp() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(true)
     const [profileImagePath, setProfileImagePath] = useState(logo)
-
+    //const user = useAuth();
     const navigate = useNavigate();
 
     const handleSignUp = async () => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const firebaseUser = userCredential.user;
+            const created_by = firebaseUser.uid
             await updateProfile(firebaseUser, {
                 displayName: firstName,
             });
@@ -43,28 +45,28 @@ function SignUp() {
                     isadmin:false
                 }),
             });
-
+            console.log(created_by)
             if (!response.ok) {
                 throw new Error("Failed create user profile");
             }
-
-            // profile image gen
-            const res = await fetch('/api/generate-images', {
+            //const user = useAuth();
+            const res = await fetch('/api/generate-profile-image', {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: headers,
                 body: JSON.stringify({
-                    prompt: `Create Profile Image for ${username}`
+                    prompt: `Create Profile Image for ${username}`,
+                    created_by: created_by
                 }),
             });
 
             const data = await res.json();
-            if(!res.ok || !data.image){
+            if(!res.ok || !data.path){
                 throw new Error(data.errorMsg || "Image generation failure");
             }
 
-            const imageURL= data.image.path
+            const imageURL= data.path
             setProfileImagePath(imageURL)
-            // navigate("/home");
+            navigate("/home");
         } catch (error){
             console.error("Sign-up error:" , error.message);
             alert("Sign-up failed: " + error.message);
@@ -82,7 +84,6 @@ function SignUp() {
                 <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}} required/>
                 <button className="bg-violet-500 text-sm text-zinc-100 p-1.5 w-full rounded" onClick={handleSignUp}>Sign Up</button>
                 <NavLink to={"/"} className="text-violet-400 text-sm mt-4"><button>Switch to Login →</button></NavLink>
-                <img src={profileImagePath} />
             </div>
         </div>
     );
