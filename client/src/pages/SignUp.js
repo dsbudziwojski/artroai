@@ -31,23 +31,6 @@ function SignUp() {
             }
             const username = firebaseUser.email.split("@")[0]
 
-            const response = await fetch("/api/users", {
-                method: "POST",
-                headers: headers,
-                body: JSON.stringify({
-                    username: username,
-                    first_name: firstName,
-                    last_name: lastName,
-                    email: firebaseUser.email,
-                    bio: "",
-                    isadmin:false
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed create user profile");
-            }
-
             // profile image gen
             const res = await fetch('/api/generate-images', {
                 method: "POST",
@@ -64,7 +47,25 @@ function SignUp() {
 
             const imageURL= data.image.path
             setProfileImagePath(imageURL)
-            // navigate("/home");
+
+            const response = await fetch("/api/users", {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify({
+                    username: username,
+                    first_name: firstName,
+                    last_name: lastName,
+                    email: firebaseUser.email,
+                    bio: "",
+                    isadmin:false,
+                    profile_image_path: imageURL
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed create user profile");
+            }
+            navigate("/home");
         } catch (error){
             console.error("Sign-up error:" , error.message);
             alert("Sign-up failed: " + error.message);

@@ -219,11 +219,15 @@ function Profile() {
             {userData ? (
                 <div>
                     <div>
-                        <h1>{firstName} {lastName}'s profile</h1>
-                        <h2>@{userData.username}</h2>
-                        <p>Joined: {userData.date_created}</p>
-                        <p>Admin: {userData.isadmin ? "Yes" : "No"}</p>
-                        <p>Bio: {bio}</p>
+                        <div className="w-80 m-5 rounded-xl">
+                            <img src={userData.profile_image_path}/>
+                            <h1>{firstName} {lastName}'s profile</h1>
+                            <h2>@{userData.username}</h2>
+                            <p>Joined: {userData.date_created}</p>
+                            <p>Admin: {userData.isadmin ? "Yes" : "No"}</p>
+                            <p>Bio: {bio}</p>
+                        </div>
+
                         {currentUser === username ? (
                             <div>
                                 <button onClick={() => setEditProfilePopup(true)}>Edit Profile</button>

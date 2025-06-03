@@ -50,8 +50,8 @@ const followersOrFollowingList = async(username, whichList) => {
 }
 
 export const createProfile = async (req, res) => {
-    const { username, first_name, last_name, bio, email} = req.body
-    if (username === "" || first_name === "" ||last_name === "" || email === "" || email === "") {
+    const { username, first_name, last_name, bio, email, profile_image_path} = req.body
+    if (username === "" || first_name === "" ||last_name === "" || email === "" || profile_image_path === "") {
         throw new Error("required input was not valid")
     }
     try {
@@ -62,7 +62,8 @@ export const createProfile = async (req, res) => {
                 last_name: last_name,
                 bio: bio,
                 email: email,
-                isadmin: false
+                isadmin: false,
+                profile_image_path: profile_image_path
             },
         })
         res.status(200).json({username: username})
