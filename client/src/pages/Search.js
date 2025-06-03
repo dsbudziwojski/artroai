@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import { filterPosts } from "../utils/searchFilter";
 import Navbar from "../components/Navbar";
+import {auth} from "../firebase";
+import {getIdToken} from "firebase/auth";
 
 // Mock data for fallback
 const mockUsers = [
@@ -153,10 +155,18 @@ function Search() {
     // Fetch all posts and users
     useEffect(() => {
         async function fetchData() {
+            if (!auth.currentUser) {
+                return;
+            }
+            const idToken =  await getIdToken(auth.currentUser, false)
+            const headers = {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${idToken}`
+            }
             try {
                 // Use a placeholder username for now
                 const username = "localdev";
-                const res = await fetch(`/api/users/${username}/usersOrImages`);
+                const res = await fetch(`/api/users/${username}/all-users-and-images`, {method: 'GET', headers: headers});
                 if (!res.ok) throw new Error("Failed to fetch search data");
                 const data = await res.json();
                 // assuming the endpoint returns { users: [...], images: [...] }
@@ -258,7 +268,7 @@ function Search() {
                                     >
                                         <img
                                             className="w-full p-10"
-                                            src={post.photo_location}
+                                            src={post.path}
                                             alt="post_img"
                                         />
                                         <p><strong>Prompt:</strong> {post.prompt}</p>

@@ -115,7 +115,7 @@ function Profile() {
     }
 
     return (
-        <div className="bg-zinc-900 min-h-screen">
+        <div className="bg-zinc-900 min-h-screen text-zinc-300">
             <Navbar/>
             {userData ? (
                 <div>
