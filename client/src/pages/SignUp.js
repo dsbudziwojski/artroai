@@ -93,6 +93,7 @@ function SignUp() {
                                     <button className="absolute top-4 right-4 px-3 py-1 text-sm text-zinc-400 bg-gray-200 hover:bg-gray-300 rounded"
                                             onClick={() => {
                                                 setLoading(false)
+                                                setCreatingProfileError(false)
                                             }}>
                                         Got it!
                                     </button>
