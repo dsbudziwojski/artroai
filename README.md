@@ -7,27 +7,170 @@
 **Technologies**: 
 1. Frontend: ReactJS + TailWind (CSS)
 2. Backend: NodeJS + Prisma PostgreSQL
-3. API: GPT
-4. Possible Optimizations: Typescript
+3. API: GPT, Firebase
 
-## What is entails our "Art Gallery":
+## What is our Art Gallery?
 Prompt user to generate AI Art which entails (2) API calls:
 1. Create the actual image based on the prompt provided:
 2. Create hashtags from the prompt (which will be stored in addition to the username of prompter and name for searching purposes) 
 
-## Running ArtoAI
+## Setting Up ArtroAI
+#### Go to the right directory
+```
+cd /go/to/.../artroai
+```
 
-0. Go to the right directory
+#### Brew installations
 ```
-cd /where/file/is/.../artroai
+# USING SCRIPTS
+chmod 754 brew-installs.sh
+./brew-installs.sh
+
+-----------------------------------------------
+
+# MANUALLY
+echo "CHECKING brew's version"
+brew --version
+echo -e "\n"
+
+echo "INSTALLING node"
+brew install node
+echo -e "\n"
+
+echo "VERIFYING node AND npm"
+node --version
+npm --version
+echo -e "\n"
+
+echo "INSTALLING postgres BECAUSE ITS SUPERIOR"
+brew install postgresql
+echo -e "\n"
+
+echo "STARTING postgres BECAUSE ITS BETTER"
+brew services start postgresql
+echo -e "\n"
+
+echo "COMPLETED brew INSTALLS"
 ```
-2. Running server
+
+#### Setting up client
+```
+# USING SCRIPTS
+chmod 754 set-up-client.sh
+./set-up-client.sh # this includes "brew services start postgresql"
+
+-----------------------------------------------
+
+# MANUALLY
+echo "BEGINNING TO SET UP CLIENT DEPENDENCIES"
+echo -e "\n"
+
+echo "NAVIGATING TO client"
+cd ./client
+
+echo "INSTALLING THINGS FOUND IN package.json"
+npm install
+
+echo "ADDING tailwind FOR TANTELIZING DESIGNS"
+npm install -D tailwindcss@3 postcss autoprefixer
+npx tailwindcss init
+
+cd ..
+echo "COMPLETED SETTING UP CLIENT DEPENDENCIES"
+
+---------NOTE---------
+# to start postgresql service
+brew services start postgresql
+
+# to stop postgresql service
+brew services stop postgresql
+
+
+```
+
+#### Setting up the database
+```
+# create database called artroai_db
+# connects as default user (homebrew defaults to macOS username)
+createdb artroai 
+
+# verify that artroai_db exists
+psql -l
+
+# check connectivuty
+psql artroai_db # prompts psql commandline
+
+# enter on psql commandline
+SELECT current_user, current_database(); -- should confirm things
+
+# add DATABASE_URL to server.env (there should be a place for it already that has "")
+# replace <username> with your usernamae seen in prompting earlier
+DATABASE_URL="postgresql://<USERNAME>@localhost:5432/artroai_db?schema=public"
+```
+
+#### Setting up server
+```
+# USING SCRIPTS
+chmod 754 set-up-server.sh
+./set-up-server.sh
+
+-----------------------------------------------
+
+# MANUALLY
+echo -e "SETTING UP server's DEPENDENCIES\n"
+
+echo "INSTALLING THINGS FOUND IN package.json"
+npm install
+echo -e "\n"
+
+echo "INITIALIZING SUPERIOR DATABASE"
+npx prisma migrate dev --name init
+echo -e "\n"
+
+echo "GENERATING IMPRESSIVE SCHEMA"
+npx prisma generate
+echo -e "\n"
+
+echo "COMPLETED SETUP!"
+
+```
+
+#### Populating seed data
+```
+# MANUAL -- no scripts :(
+echo -e "POPULATING SEED DATA!"
+cd server
+psql artroai_db -U <username> -f ./seed-data.sql
+cd ..
+echo -e "COMPLETED IMPORTING SEED DATA!"
+
+-----------------------------------------------
+
+# if psql artroai_db -U <username> -f ./seed-data.sql errors
+# try to use the database_url in place of <username>
+```
+
+## Running ArtroAI
+#### Go to the right directory
+```
+cd /go/to/.../artroai
+```
+#### Make sure that postgres is running
+```
+brew services start postgresql
+```
+
+### Open Two Separate Terminals
+#### Run server
 ```
 cd server
 npm start
 ```
-2. Running client
+#### Run client
 ```
 cd client
 npm start
 ```
+
+## Acknowledgements
+TODO 

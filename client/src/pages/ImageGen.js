@@ -115,7 +115,7 @@ function ImageGen() {
                     )}
                 </div>
                 <textarea
-                    className="w-full bg-zinc-700 border border-zinc-500 overflow-visible resize-none placeholder-zinc-400 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                    className="w-full bg-zinc-700 border mt-5 border-zinc-500 overflow-visible resize-none placeholder-zinc-400 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-600"
                     placeholder="Enter a prompt"
                     value={prompt}
                     rows={4}
