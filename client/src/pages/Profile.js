@@ -271,13 +271,13 @@ function Profile() {
                                         <div className="px-2">
                                             <button onClick={() => setFollowersPopup(true)}>Followers</button>: {displayFollowerCount}
                                             <FollowerPopup trigger={followersPopup} setTrigger={setFollowersPopup}>
-                                                <h4 className="pb-1 text-opacity-90 text-zinc-500">Profiles that follow @{username}: </h4>
+                                                <h4 className="pb-1 text-zinc-300 font-medium">Profiles that follow @{username}: </h4>
                                                 {Array.isArray(displayFollowing) ? (
                                                     <ul>
                                                         {displayFollowing.map((follower) => (
                                                             <li key={follower.user_id}>
                                                                 <a href={`/profile/${follower.user_id}`}>
-                                                                    <button className="text-opacity-80 text-violet-500 underline underline-offset-2" onClick={() => {navigate(`/profile/${follower.user_id}`); setFollowersPopup(false)}}>
+                                                                    <button className="text-violet-500 hover:text-violet-300 transition underline underline-offset-2" onClick={() => {navigate(`/profile/${follower.user_id}`); setFollowersPopup(false)}}>
                                                                         @{follower.user_id}
                                                                     </button>
                                                                 </a>
@@ -292,13 +292,13 @@ function Profile() {
                                         <div className="px-2">
                                             <button onClick={() => setFollowingPopup(true)}>Following</button>: {displayFollowingCount}
                                             <FollowerPopup trigger={followingPopup} setTrigger={setFollowingPopup}>
-                                                <h4 className="pb-1 text-opacity-90 text-zinc-500">Profiles that @{username} follows: </h4>
+                                                <h4 className="pb-1 text-zinc-300 font-medium">Profiles that @{username} follows: </h4>
                                                 {Array.isArray(displayFollowing) ? (
                                                     <ul>
                                                         {displayFollowers.map((follow) => (
                                                             <li key={follow.following_id}>
                                                                 <a href={`/profile/${follow.following_id}`}>
-                                                                    <button className="text-opacity-80 text-violet-500 underline underline-offset-2" onClick={() => {navigate(`/profile/${follow.following_id}`); setFollowingPopup(false)}}>
+                                                                    <button className="text-violet-500 hover:text-violet-300 transition underline underline-offset-2" onClick={() => {navigate(`/profile/${follow.following_id}`); setFollowingPopup(false)}}>
                                                                         @{follow.following_id}
                                                                     </button>
                                                                 </a>
@@ -340,17 +340,20 @@ function Profile() {
                                         {currentUser === username && (
                                             <div>
                                                 <button
-                                                    className="text-zinc-500 rounded-md hover:text-zinc-50 transition"
+                                                    className="font-medium text-zinc-500 rounded-md hover:text-zinc-50 transition"
                                                     onClick={() => setEditProfilePopup(true)}
                                                 >Edit Profile</button>
                                                 <EditProfilePopup trigger={editProfilePopup} setTrigger={setEditProfilePopup}>
                                                     <div>
-                                                        <h1>Edit Profile:</h1>
-                                                        <input type="text" placeholder="First Name" value={displayFirstName} onChange={(e) => {setDisplayFirstName(e.target.value)}}/>
-                                                        <input type="text" placeholder="Last Name" value={displayLastName} onChange={(e) => {setDisplayLastName(e.target.value)}}/>
-                                                        <input type="text" placeholder="Bio Name" value={displayBio} onChange={(e) => {setDisplayBio(e.target.value)}}/>
-                                                        <br></br>
-                                                        <button onClick={() => {handleProfileUpdate(displayFirstName, displayLastName, displayBio); setEditProfilePopup(false)}}>Save Changes</button>
+                                                        <h1 className="font-medium text-zinc-400">Edit Profile:</h1>
+                                                        <div className="mt-4">
+                                                            <input className="w-60 border border-zinc-500 bg-zinc-700 text-zinc-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition" type="text" placeholder="First Name" value={displayFirstName} onChange={(e) => {setDisplayFirstName(e.target.value)}}/>
+                                                            <input className="w-60 ml-8 border border-zinc-500 bg-zinc-700 text-zinc-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition" type="text" placeholder="Last Name" value={displayLastName} onChange={(e) => {setDisplayLastName(e.target.value)}}/>
+                                                        </div>
+                                                        <div className="mt-4 mb-4">
+                                                            <textarea className="w-full h-64 overflow-visible resize-none border border-zinc-500 bg-zinc-700 text-zinc-300 rounded-md px-2 py-2 overflow-visible focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition" type="text" placeholder="Bio" value={displayBio} onChange={(e) => {setDisplayBio(e.target.value)}}/>
+                                                        </div>
+                                                        <button className="ml-32 px-2 py-1 text-zinc-100 bg-green-600 hover:bg-green-700 font-bold rounded transition" onClick={() => {handleProfileUpdate(displayFirstName, displayLastName, displayBio); setEditProfilePopup(false)}}>Save Changes</button>
                                                     </div>
                                                 </EditProfilePopup>
                                             </div>
@@ -384,9 +387,9 @@ function Profile() {
                                                 <div className="relative">
                                                     {selectedImage?.image_id === img.image_id && (
                                                         <ImagePopup trigger={imagePopup} setTrigger={setImagePopup}>
-                                                            <p className="text-sm text-zinc-400">Prompts: {img.prompt}</p>
-                                                            <p className="text-sm text-zinc-400">Hashtags: {img.hashtags}</p>
-                                                            <p className="text-sm text-zinc-400">Date Created: {img.date_created.split('T')[0]}</p>
+                                                            <p className="text-sm text-zinc-300"><span className="font-medium text-zinc-400">Prompts: </span>{img.prompt}</p>
+                                                            <p className="text-sm text-zinc-300"><span className="font-medium text-zinc-400">Hashtags: </span>{img.hashtags}</p>
+                                                            <p className="text-sm text-zinc-300"><span className="font-medium text-zinc-400">Date Created: </span>{img.date_created.split('T')[0]}</p>
                                                         </ImagePopup>
                                                     )}
                                                 </div>

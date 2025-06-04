@@ -251,7 +251,7 @@ function Search() {
                                     placeholder="Search..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full px-4 py-2 bg-zinc-700 text-zinc-100 rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500"
+                                    className="w-full px-4 py-2 bg-zinc-700 text-zinc-100 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
                                 />
                             </div>
                         </div>
@@ -278,7 +278,7 @@ function Search() {
                                             <strong>By:</strong>
                                             <button
                                                 onClick={() => handleProfileClick({ username: post.created_by })}
-                                                className="ml-2 underline text-violet-400 hover:text-violet-200"
+                                                className="ml-2 underline text-violet-400 hover:text-violet-200 transition"
                                             >
                                                 {post.created_by}
                                             </button>

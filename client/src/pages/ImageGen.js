@@ -115,7 +115,7 @@ function ImageGen() {
                     )}
                 </div>
                 <textarea
-                    className="w-full bg-zinc-700 border mt-5 border-zinc-500 overflow-visible resize-none placeholder-zinc-400 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-600"
+                    className="w-full bg-zinc-700 border mt-5 border-zinc-500 overflow-visible resize-none placeholder-zinc-400 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition"
                     placeholder="Enter a prompt"
                     value={prompt}
                     rows={4}
@@ -124,7 +124,7 @@ function ImageGen() {
 
                 <button
                     onClick={genImage}
-                    className="mt-3 px-4 py-2 bg-violet-500 text-white rounded"
+                    className="mt-3 px-4 py-2 bg-violet-500 text-zinc-100 hover:bg-violet-600 transition rounded"
                 >
                     Generate image
                 </button>

@@ -103,7 +103,7 @@ function Home() {
     return (
         <div className="bg-zinc-900 min-h-screen"> {/* bg-zinc-900*/}
             <DailyPopup trigger={timedPopup} setTrigger={setTimedPopup}>
-                <div className="text-sm text-opacity-90 text-zinc-500">
+                <div className="text-sm text-zinc-300">
                     <h3>Hey {myUsername}!</h3>
                     <p>Make sure to generate your daily post!</p>
                 </div>
