@@ -92,13 +92,14 @@ brew services stop postgresql
 ```
 # create database called artroai_db
 # connects as default user (homebrew defaults to macOS username)
-createdb artroai 
+createdb artroai_db
 
 # verify that artroai_db exists
 psql -l
 
 # check connectivuty
-psql artroai_db # prompts psql commandline
+psql artroai_db 
+# prompts psql commandline
 
 # enter on psql commandline
 SELECT current_user, current_database(); -- should confirm things
@@ -106,6 +107,17 @@ SELECT current_user, current_database(); -- should confirm things
 # add DATABASE_URL to server.env (there should be a place for it already that has "")
 # replace <username> with your usernamae seen in prompting earlier
 DATABASE_URL="postgresql://<USERNAME>@localhost:5432/artroai_db?schema=public"
+
+-----------------------------------------------
+# .env file for server should look like:
+
+DATABASE_URL=
+OPENAI_API_KEY="ALREADY_THERE_"
+FIREBASE_PROJECT_ID="ALREADY_THERE_"
+FIREBASE_CLIENT_EMAIL="ALREADY_THERE_"
+FIREBASE_PRIVATE_KEY="ALREADY_THERE_"
+
+# .env file for client should already be there
 ```
 
 #### Setting up server
@@ -118,6 +130,9 @@ chmod 754 set-up-server.sh
 
 # MANUALLY
 echo -e "SETTING UP server's DEPENDENCIES\n"
+
+echo "NAVIGATING TO server"
+cd ./server
 
 echo "INSTALLING THINGS FOUND IN package.json"
 npm install
@@ -139,9 +154,7 @@ echo "COMPLETED SETUP!"
 ```
 # MANUAL -- no scripts :(
 echo -e "POPULATING SEED DATA!"
-cd server
 psql artroai_db -U <username> -f ./seed-data.sql
-cd ..
 echo -e "COMPLETED IMPORTING SEED DATA!"
 
 -----------------------------------------------
@@ -172,5 +185,17 @@ cd client
 npm start
 ```
 
+## Once everything is working
+### Accounts already there!
+```
+email: neo01@example.com
+password: Anderson
+```
+
+### Create an account!
+```
+Simply navigate to signup and input your info!
+```
+
 ## Acknowledgements
-We graciously thank the documentation pages for the providing light in a tunnel of unknown. Additionally, we appreciate Firebase for being deceptively hard to set up and causing us to debug for countless hours as well as TailwindCSS for being a forgiving UI helper and making even the least artistic people feel like rafael. Lastly, we greatly adore GPT for the help in populating the seed data and being a feature that truly allows art to behold everyone equally.
+We graciously thank the documentation pages for the providing light in a tunnel of unknown. Additionally, we appreciate Firebase for being deceptively hard to set up and causing us to debug for countless hours as well as TailwindCSS for being a forgiving UI helper and making even the least artistic people feel creative. Lastly, we greatly adore GPT for the help in populating the seed data and being a feature that truly allows art to behold everyone equally.
