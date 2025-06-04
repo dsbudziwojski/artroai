@@ -175,7 +175,7 @@ function Home() {
                                     {feedType === "Private" ?
                                         <div className="flex justify-center">
                                             <button
-                                                className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg"
+                                                className="bg-green-600 hover:bg-green-700 text-zinc-100 py-2 px-4 rounded-lg transition"
                                                 onClick={()=> {navigate("/search")}}
                                             >
                                                 <h2>Find Others</h2>

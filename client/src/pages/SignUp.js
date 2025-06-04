@@ -100,19 +100,17 @@ function SignUp() {
                                     Sorry An Error Occurred... Try Again Please!
                                 </div>
                             }
-
-
                         </div>
                     </div> : null
                 }
                 <img src={logo} className="rounded-lg w-50 h-auto mx-auto mb-4" />
                 <h1 className="text-2xl text-white mb-2">Sign Up</h1>
-                <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="text" placeholder="First Name" onChange={(e) => {setFirstName(e.target.value)}} required/>
-                <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="text" placeholder="Last Name" onChange={(e) => {setLastName(e.target.value)}} required/>
-                <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="email" placeholder="Email" onChange={(e) => {setEmail(e.target.value)}} required/>
-                <input className="p-1 bg-zinc-700 text-sm text-zinc-300 placeholder-zinc-400 rounded" type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}} required/>
-                <button className="bg-violet-500 text-sm text-zinc-100 p-1.5 w-full rounded" onClick={handleSignUp}>Sign Up</button>
-                <NavLink to={"/"} className="text-violet-400 text-sm mt-4"><button>Switch to Login →</button></NavLink>
+                <input className="p-1 text-sm border border-zinc-500 bg-zinc-700 text-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition placeholder-zinc-400 rounded" type="text" placeholder="First Name" onChange={(e) => {setFirstName(e.target.value)}} required/>
+                <input className="p-1 text-sm border border-zinc-500 bg-zinc-700 text-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition placeholder-zinc-400 rounded" type="text" placeholder="Last Name" onChange={(e) => {setLastName(e.target.value)}} required/>
+                <input className="p-1 text-sm border border-zinc-500 bg-zinc-700 text-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition placeholder-zinc-400 rounded" type="email" placeholder="Email" onChange={(e) => {setEmail(e.target.value)}} required/>
+                <input className="p-1 text-sm border border-zinc-500 bg-zinc-700 text-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition placeholder-zinc-400 rounded" type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}} required/>
+                <button className="bg-violet-500 text-sm text-zinc-100 p-1.5 w-full hover:bg-violet-600 rounded-md transition" onClick={handleSignUp}>Sign Up</button>
+                <NavLink to={"/"} className="text-violet-400 text-sm mt-4 hover:text-violet-300 transition"><button>Switch to Login →</button></NavLink>
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import FollowerPopup from '../components/FollowerPopup';
 import ImagePopup from '../components/ImagePopup';
@@ -408,13 +408,13 @@ function Profile() {
                     <div className="bg-zinc-800 p-10 rounded-lg text-center flex flex-col gap-2 w-96">
                         {timer ? (
                             <div>
-                                <h1 className="text-2xl text-white mb-2">Make sure you are logged in</h1>
-                                <button className="text-violet-400 text-sm mt-4" onClick={() => navigate("/")}>Go back to Login Page →</button>
+                                <h1 className="text-2xl text-white mb-2 p-1">Make sure you are logged in</h1>
+                                <NavLink to={"/"} className="text-violet-400 text-sm mt-4 hover:text-violet-300 transition">Go back to Login Page →</NavLink>
                             </div>
                         ) : (
                             <div>
-                                <h1 className="text-2xl text-white mb-2">Loading Profile...</h1>
-                                <button className="text-violet-400 text-sm mt-4" onClick={() => navigate("/home")}>Go back to Home Page →</button>
+                                <h1 className="text-2xl text-white mb-2 p-1">Loading Profile...</h1>
+                                <NavLink to={"/home"} className="text-violet-400 text-sm mt-4 hover:text-violet-300 transition">Go back to Home Page →</NavLink>
                             </div>
                         )}
                     </div>
