@@ -83,19 +83,19 @@ function SignUp() {
             <div className="bg-zinc-800 p-10 rounded-lg text-center flex flex-col gap-2 w-96">
                 {(loading) ?
                     <div className="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-20 flex justify-center items-center z-50">
-                        <div className="relative p-8 w-full max-w-xl bg-white rounded-lg shadow-lg">
+                        <div className="relative p-8 w-full max-w-xl bg-zinc-700 rounded-lg shadow-lg">
                             {!(creatingProfileError) ?
-                                <div>
+                                <div className="text-zinc-300">
                                     Creating Profile...
                                 </div>
                                 :
-                                <div>
-                                    <button className="absolute top-4 right-4 px-3 py-1 text-sm text-zinc-400 bg-gray-200 hover:bg-gray-300 rounded"
+                                <div className="text-zinc-300">
+                                    <button className="absolute top-3 right-3 px-2 py-0.5 text-sm text-zinc-100 hover:bg-zinc-300 hover:text-zinc-700 font-bold rounded transition"
                                             onClick={() => {
                                                 setLoading(false)
                                                 setCreatingProfileError(false)
                                             }}>
-                                        Got it!
+                                        X
                                     </button>
                                     Sorry An Error Occurred... Try Again Please!
                                 </div>
