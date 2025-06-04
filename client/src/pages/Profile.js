@@ -397,7 +397,9 @@ function Profile() {
                                         ))}
                                     </div>
                                 ) : (
-                                    <p>No posts found.</p>
+                                    <div className="flex justify-center">
+                                        <p className="p-10">No posts</p>
+                                    </div>
                                 )}
                             </div>
                         </div>
