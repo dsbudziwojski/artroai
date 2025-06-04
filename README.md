@@ -173,4 +173,4 @@ npm start
 ```
 
 ## Acknowledgements
-TODO 
+We graciously thank the documentation pages for the providing light in a tunnel of unknown. Additionally, we appreciate Firebase for being deceptively hard to set up and causing us to debug for countless hours as well as TailwindCSS for being a forgiving UI helper and making even the least artistic people feel like rafael. Lastly, we greatly adore GPT for the help in populating the seed data and being a feature that truly allows art to behold everyone equally.
