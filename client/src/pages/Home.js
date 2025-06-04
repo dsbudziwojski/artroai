@@ -1,5 +1,5 @@
 import { use, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import DailyPopup from '../components/DailyPopup';
 import Navbar from "../components/Navbar";
 import { useAuth } from '../AuthContext';
@@ -103,9 +103,10 @@ function Home() {
     return (
         <div className="bg-zinc-900 min-h-screen"> {/* bg-zinc-900*/}
             <DailyPopup trigger={timedPopup} setTrigger={setTimedPopup}>
-                <div className="text-sm text-zinc-300">
-                    <h3>Hey {myUsername}!</h3>
-                    <p>Make sure to generate your daily post!</p>
+                <div className="text-zinc-300">
+                    <h3 className="font-bold">Hey {myUsername}!</h3>
+                    <p className="text-sm mt-2 mb-0.5">Make sure to generate your daily post!</p>
+                    <NavLink to={"/generate/image"} className="font-medium text-violet-400 text-sm mt-4 hover:text-violet-300 transition">Take me there →</NavLink>
                 </div>
             </DailyPopup>
             <Navbar />

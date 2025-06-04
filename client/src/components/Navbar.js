@@ -1,17 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import { signOut } from 'firebase/auth';
 import {auth} from '../firebase'
 
 function GeneralButton({label, route}){
-    const navigate = useNavigate();
     return(
-        <button
-            className="px-3 py-2 rounded-md hover:bg-zinc-100 hover:text-violet-800 transition"
-            onClick={() => navigate(route)}
-        >
-            {label}
-        </button>
+        <NavLink to={route} className="px-3 py-2 rounded-md hover:bg-zinc-100 hover:text-violet-800 transition">{label}</NavLink>
     )
 }
 
@@ -27,12 +21,7 @@ function SignOutButton() {
         }
     };
     return(
-        <button
-            className="px-3 py-2 rounded-md hover:bg-red-500 transition"
-            onClick={handleSignOut}
-        >
-            Sign Out
-        </button>
+        <NavLink to={"/"} className="px-3 py-2 rounded-md hover:bg-red-500 transition" onClick={handleSignOut}>Sign Out</NavLink>
     )
 }
 

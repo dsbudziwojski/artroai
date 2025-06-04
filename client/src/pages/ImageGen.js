@@ -124,7 +124,7 @@ function ImageGen() {
 
                 <button
                     onClick={genImage}
-                    className="mt-3 px-4 py-2 bg-violet-500 text-zinc-100 hover:bg-violet-600 transition rounded"
+                    className="mt-3 px-4 py-2 bg-violet-500 text-zinc-100 hover:bg-violet-600 transition rounded-md"
                 >
                     Generate image
                 </button>

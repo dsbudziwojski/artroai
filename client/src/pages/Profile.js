@@ -345,7 +345,7 @@ function Profile() {
                                                 >Edit Profile</button>
                                                 <EditProfilePopup trigger={editProfilePopup} setTrigger={setEditProfilePopup}>
                                                     <div>
-                                                        <h1 className="font-medium text-zinc-400">Edit Profile:</h1>
+                                                        <h1 className="font-bold text-zinc-400">Edit Profile:</h1>
                                                         <div className="mt-4">
                                                             <input className="w-60 border border-zinc-500 bg-zinc-700 text-zinc-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition" type="text" placeholder="First Name" value={displayFirstName} onChange={(e) => {setDisplayFirstName(e.target.value)}}/>
                                                             <input className="w-60 ml-8 border border-zinc-500 bg-zinc-700 text-zinc-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition" type="text" placeholder="Last Name" value={displayLastName} onChange={(e) => {setDisplayLastName(e.target.value)}}/>
@@ -366,7 +366,7 @@ function Profile() {
                     <div className="flex justify-center">
                         <div className="w-[1200px] h-max m-6 p-4 bg-zinc-800 rounded-xl shadow-sm space-x-4">
                             <div className="flex flex-col">
-                                <div className="flex justify-center text-zinc-300 text-lg pt-5">
+                                <div className="flex justify-center text-zinc-300 text-lg pt-5 font-bold">
                                     <h3>Gallery</h3>
                                 </div>
                                 {Array.isArray(posts) ? (
@@ -387,9 +387,9 @@ function Profile() {
                                                 <div className="relative">
                                                     {selectedImage?.image_id === img.image_id && (
                                                         <ImagePopup trigger={imagePopup} setTrigger={setImagePopup}>
-                                                            <p className="text-sm text-zinc-300"><span className="font-medium text-zinc-400">Prompts: </span>{img.prompt}</p>
-                                                            <p className="text-sm text-zinc-300"><span className="font-medium text-zinc-400">Hashtags: </span>{img.hashtags}</p>
-                                                            <p className="text-sm text-zinc-300"><span className="font-medium text-zinc-400">Date Created: </span>{img.date_created.split('T')[0]}</p>
+                                                            <p className="text-sm text-zinc-300"><span className="font-bold text-zinc-400">Prompts: </span>{img.prompt}</p>
+                                                            <p className="text-sm text-zinc-300"><span className="font-bold text-zinc-400">Hashtags: </span>{img.hashtags}</p>
+                                                            <p className="text-sm text-zinc-300"><span className="font-bold text-zinc-400">Date Created: </span>{img.date_created.split('T')[0]}</p>
                                                         </ImagePopup>
                                                     )}
                                                 </div>
