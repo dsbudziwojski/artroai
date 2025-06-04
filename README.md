@@ -14,6 +14,11 @@ Prompt user to generate AI Art which entails (2) API calls:
 1. Create the actual image based on the prompt provided:
 2. Create hashtags from the prompt (which will be stored in addition to the username of prompter and name for searching purposes) 
 
+## Github Page
+```
+https://github.com/dsbudziwojski/artroai.git
+```
+
 ## Setting Up ArtroAI
 #### Go to the right directory
 ```
